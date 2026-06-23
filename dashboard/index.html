@@ -8,186 +8,558 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #222; }
-    header { background: #1a1a2e; color: #fff; padding: 1.2rem 2rem; }
-    header h1 { font-size: 1.4rem; }
-    header p  { font-size: 0.85rem; opacity: 0.7; margin-top: 0.2rem; }
-    main { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
-    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-    .card { background: #fff; border-radius: 8px; padding: 1rem; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
-    .card .count { font-size: 2rem; font-weight: 700; color: #1a1a2e; }
-    .card .label { font-size: 0.8rem; color: #666; text-transform: capitalize; margin-top: 0.2rem; }
-    .chart-wrap { background: #fff; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 2rem; }
-    .toolbar { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; }
-    select { padding: 0.4rem 0.8rem; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; }
-    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
-    th { background: #1a1a2e; color: #fff; padding: 0.7rem 1rem; text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
-    td { padding: 0.65rem 1rem; border-bottom: 1px solid #eee; font-size: 0.9rem; }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: #f9f9f9; }
-    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: #e8eaf6; color: #3949ab; text-transform: capitalize; }
-    .empty { text-align: center; padding: 3rem; color: #999; }
-    #status { font-size: 0.8rem; color: #666; margin-left: auto; }
+    :root {
+      --navy: #1a1a2e; --coral: #e94560; --bg: #f0f2f5;
+      --card: #fff; --border: #e2e4e8; --text: #1a1a2e; --muted: #6b7280;
+    }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Header ── */
+    header { background: var(--navy); color: #fff; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; position: sticky; top: 0; z-index: 100; }
+    .header-left { display: flex; align-items: center; gap: 0.75rem; }
+    .pulse-dot { width: 10px; height: 10px; background: #4ade80; border-radius: 50%; flex-shrink: 0; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.2)} }
+    .header-title h1 { font-size: 1.15rem; font-weight: 700; }
+    .header-title p { font-size: 0.75rem; opacity: 0.6; margin-top: 1px; }
+    .header-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+    .btn-ghost { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 6px; padding: 0.4rem 0.75rem; font-size: 0.8rem; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+    .btn-ghost:hover { background: rgba(255,255,255,0.2); }
+    .btn-ghost.active { background: var(--coral); border-color: var(--coral); }
+
+    /* ── Chat ── */
+    .chat-section { background: var(--card); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem; }
+    .chat-input-row { display: flex; gap: 0.5rem; max-width: 720px; margin: 0 auto; }
+    .chat-input-row input { flex: 1; padding: 0.6rem 1rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.95rem; outline: none; transition: border-color 0.15s; }
+    .chat-input-row input:focus { border-color: var(--navy); }
+    .btn-primary { background: var(--navy); color: #fff; border: none; border-radius: 8px; padding: 0.6rem 1.25rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; white-space: nowrap; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:disabled { opacity: 0.5; cursor: default; }
+    .chip-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.65rem; max-width: 720px; margin-left: auto; margin-right: auto; }
+    .chip { background: #f0f2f5; border: 1px solid var(--border); border-radius: 99px; padding: 0.3rem 0.75rem; font-size: 0.78rem; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+    .chip:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .chat-result { max-width: 720px; margin: 0.75rem auto 0; background: #eef2ff; border-left: 3px solid var(--navy); border-radius: 6px; padding: 0.75rem 1rem; font-size: 0.88rem; line-height: 1.5; }
+    .chat-result.error { background: #fff0f0; border-color: var(--coral); }
+    .chat-coming-soon { max-width: 720px; margin: 0.5rem auto 0; font-size: 0.78rem; color: var(--muted); text-align: center; }
+
+    /* ── Browse controls ── */
+    .browse-bar { max-width: 1200px; margin: 1rem auto; padding: 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .pill-row { display: flex; gap: 0.4rem; flex-wrap: wrap; flex: 1; }
+    .pill { background: var(--card); border: 1.5px solid var(--border); border-radius: 99px; padding: 0.35rem 0.9rem; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--text); }
+    .pill:hover { border-color: var(--navy); color: var(--navy); }
+    .pill.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .date-toggle { background: var(--card); border: 1.5px solid var(--border); border-radius: 99px; padding: 0.35rem 0.9rem; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--muted); white-space: nowrap; }
+    .date-toggle.active { background: var(--coral); color: #fff; border-color: var(--coral); }
+    .sort-select { padding: 0.35rem 0.75rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.82rem; background: var(--card); cursor: pointer; color: var(--text); }
+    .result-count { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+
+    /* ── Content grid ── */
+    .content-grid { max-width: 1200px; margin: 0 auto 2rem; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr 320px; gap: 1.25rem; }
+    @media (max-width: 900px) { .content-grid { grid-template-columns: 1fr; } .charts-col { display: none; } }
+
+    /* ── Venue cards ── */
+    #venue-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .venue-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s; display: flex; align-items: center; gap: 0.75rem; }
+    .venue-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: #c5c9d3; }
+    .venue-card-body { flex: 1; min-width: 0; }
+    .venue-name { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .venue-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.2rem; flex-wrap: wrap; }
+    .badge { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 99px; font-size: 0.72rem; font-weight: 600; background: #eef2ff; color: #3949ab; text-transform: capitalize; }
+    .price-tag { font-size: 0.75rem; color: #059669; font-weight: 600; }
+    .area-tag { font-size: 0.75rem; color: var(--muted); }
+    .dist-tag { font-size: 0.75rem; color: var(--muted); }
+    .venue-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem; flex-shrink: 0; }
+    .rating-pill { display: flex; align-items: center; gap: 0.25rem; font-size: 0.85rem; font-weight: 700; color: var(--text); }
+    .rating-pill .star { color: #f59e0b; }
+    .review-count { font-size: 0.72rem; color: var(--muted); }
+    .heart-icon { font-size: 0.9rem; color: var(--coral); }
+    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); background: var(--card); border-radius: 10px; border: 1px solid var(--border); }
+
+    /* ── Charts sidebar ── */
+    .charts-col { display: flex; flex-direction: column; gap: 1rem; }
+    .chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+    .chart-card h3 { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
+
+    /* ── Detail overlay ── */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: flex; align-items: flex-end; justify-content: center; }
+    .overlay.hidden { display: none; }
+    .panel { background: var(--card); border-radius: 16px 16px 0 0; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; padding-bottom: 2rem; }
+    .panel-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 1.25rem 1.25rem 0; gap: 0.5rem; }
+    .panel-close { background: #f0f2f5; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); }
+    .panel-title { font-size: 1.15rem; font-weight: 700; line-height: 1.3; }
+    .panel-subtitle { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
+    .panel-body { padding: 1rem 1.25rem 0; }
+    .stats-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
+    .stat-box { flex: 1; background: #f8f9fa; border-radius: 8px; padding: 0.65rem; text-align: center; }
+    .stat-val { font-size: 1.1rem; font-weight: 700; }
+    .stat-lbl { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+    .action-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .action-btn { flex: 1; min-width: 100px; padding: 0.55rem 0.75rem; border-radius: 8px; border: 1.5px solid var(--border); background: var(--card); font-size: 0.85rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.15s; text-decoration: none; color: var(--text); display: block; }
+    .action-btn:hover { border-color: var(--navy); color: var(--navy); }
+    .action-btn.fav-active { border-color: var(--coral); color: var(--coral); }
+    .section-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.5rem; }
+    .ai-summary { background: #f8f9fa; border-radius: 8px; padding: 0.85rem; font-size: 0.88rem; line-height: 1.55; margin-bottom: 1rem; color: #374151; }
+    .ai-summary.placeholder { color: var(--muted); font-style: italic; }
+    .tag-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .tag-chip { padding: 0.25rem 0.65rem; border-radius: 99px; font-size: 0.75rem; font-weight: 500; border: 1px solid var(--border); }
+    .tag-chip.date { background: #fff0f3; border-color: #fca5a5; color: var(--coral); }
+    .tag-chip.item { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+    .tag-chip.vibe { background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; }
+    .hours-list { font-size: 0.83rem; display: flex; flex-direction: column; gap: 0.3rem; }
+    .hours-row { display: flex; justify-content: space-between; padding: 0.3rem 0.5rem; border-radius: 4px; }
+    .hours-row.today { background: #eef2ff; font-weight: 600; }
+    .open-badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; }
+    .open-badge.open { background: #f0fdf4; color: #15803d; }
+    .open-badge.closed { background: #fff0f0; color: #dc2626; }
+
+    /* ── Favourites overlay ── */
+    .fav-panel { background: var(--card); border-radius: 16px 16px 0 0; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; padding: 1.25rem 1.25rem 2rem; }
+    .fav-panel h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+
+    /* ── Loading skeleton ── */
+    .skeleton { background: linear-gradient(90deg, #e8eaed 25%, #f5f5f5 50%, #e8eaed 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 6px; height: 14px; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .skel-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
   </style>
 </head>
 <body>
 
+<!-- ── Header ─────────────────────────────────────────────────────────── -->
 <header>
-  <h1>Cape Town Explorer</h1>
-  <p>Real venue data from Supabase — no hardcoded arrays</p>
+  <div class="header-left">
+    <div class="pulse-dot" id="status-dot"></div>
+    <div class="header-title">
+      <h1>Cape Town Explorer</h1>
+      <p id="header-sub">Loading venues…</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-ghost" id="loc-btn">📍 Use my location</button>
+    <button class="btn-ghost" id="fav-btn">♥ Saved</button>
+  </div>
 </header>
 
-<main>
-  <div class="cards" id="summary-cards">
-    <div class="card"><div class="count" id="total-count">—</div><div class="label">Total venues</div></div>
+<!-- ── Chat assistant ─────────────────────────────────────────────────── -->
+<div class="chat-section">
+  <div class="chat-input-row">
+    <input type="text" id="chat-input" placeholder="e.g. date spot near the beach, cheap sushi, something fun with my girlfriend…" />
+    <button class="btn-primary" id="chat-btn">Search</button>
   </div>
-
-  <div class="chart-wrap">
-    <canvas id="cat-chart" height="80"></canvas>
+  <div class="chip-row">
+    <button class="chip">Date spot near the beach</button>
+    <button class="chip">Sushi spots</button>
+    <button class="chip">Thrift + coffee</button>
+    <button class="chip">Outdoor adventure</button>
+    <button class="chip">Family day out</button>
   </div>
+  <div id="chat-result" class="chat-result" style="display:none"></div>
+  <div class="chat-coming-soon" id="chat-note">AI enrichment runs weekly — results improve as venues are tagged</div>
+</div>
 
-  <div class="toolbar">
-    <select id="cat-filter">
-      <option value="">All categories</option>
-      <option value="cafe">Cafe</option>
-      <option value="restaurant">Restaurant</option>
-      <option value="attraction">Attraction</option>
-      <option value="outdoor">Outdoor</option>
-      <option value="family">Family</option>
-      <option value="adventure">Adventure</option>
-      <option value="thrift">Thrift</option>
-    </select>
-    <span id="status"></span>
+<!-- ── Browse controls ───────────────────────────────────────────────── -->
+<div class="browse-bar">
+  <div class="pill-row" id="pill-row">
+    <button class="pill active" data-cat="">All</button>
+    <button class="pill" data-cat="cafe">Cafes</button>
+    <button class="pill" data-cat="restaurant">Restaurants</button>
+    <button class="pill" data-cat="attraction">Attractions</button>
+    <button class="pill" data-cat="outdoor">Outdoor &amp; nature</button>
+    <button class="pill" data-cat="family">Family &amp; kids</button>
+    <button class="pill" data-cat="adventure">Adventure</button>
+    <button class="pill" data-cat="thrift">Thrift &amp; vintage</button>
   </div>
+  <button class="date-toggle" id="date-toggle">♥ Date ideas</button>
+  <select class="sort-select" id="sort-select">
+    <option value="rating">Rating</option>
+    <option value="value">Value score</option>
+    <option value="distance">Distance from me</option>
+    <option value="reviews">Most reviewed</option>
+  </select>
+  <span class="result-count" id="result-count"></span>
+</div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th><th>Category</th><th>Area</th><th>Rating</th><th>Reviews</th>
-      </tr>
-    </thead>
-    <tbody id="venue-tbody">
-      <tr><td colspan="5" class="empty">Loading…</td></tr>
-    </tbody>
-  </table>
-</main>
+<!-- ── Main content ───────────────────────────────────────────────────── -->
+<div class="content-grid">
+  <div id="venue-list">
+    <!-- skeletons while loading -->
+    <div class="skel-card"><div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:35%"></div></div>
+    <div class="skel-card"><div class="skeleton" style="width:50%"></div><div class="skeleton" style="width:40%"></div></div>
+    <div class="skel-card"><div class="skeleton" style="width:55%"></div><div class="skeleton" style="width:30%"></div></div>
+  </div>
+  <div class="charts-col">
+    <div class="chart-card">
+      <h3>By category</h3>
+      <canvas id="cat-chart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Top 5 value score</h3>
+      <canvas id="value-chart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ── Venue detail overlay ───────────────────────────────────────────── -->
+<div class="overlay hidden" id="detail-overlay">
+  <div class="panel" id="detail-panel">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title" id="d-name"></div>
+        <div class="panel-subtitle" id="d-sub"></div>
+      </div>
+      <button class="panel-close" id="detail-close">✕</button>
+    </div>
+    <div class="panel-body">
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-val" id="d-rating">—</div><div class="stat-lbl">Rating</div></div>
+        <div class="stat-box"><div class="stat-val" id="d-reviews">—</div><div class="stat-lbl">Reviews</div></div>
+        <div class="stat-box"><div class="stat-val" id="d-price">—</div><div class="stat-lbl">Price</div></div>
+        <div class="stat-box"><div class="stat-val" id="d-status">—</div><div class="stat-lbl">Right now</div></div>
+      </div>
+      <div class="action-row">
+        <button class="action-btn" id="d-fav-btn">♡ Save</button>
+        <a class="action-btn" id="d-directions" href="#" target="_blank" rel="noopener">↗ Directions</a>
+        <a class="action-btn" id="d-call" href="#" style="display:none">📞 Call</a>
+      </div>
+      <div class="section-label">AI Review Summary</div>
+      <div class="ai-summary" id="d-summary"></div>
+      <div class="tag-chips" id="d-tags"></div>
+      <div class="section-label" id="hours-label" style="display:none">Opening Hours</div>
+      <div class="hours-list" id="d-hours"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Favourites overlay ─────────────────────────────────────────────── -->
+<div class="overlay hidden" id="fav-overlay">
+  <div class="fav-panel">
+    <h2>Saved places <button class="panel-close" id="fav-close">✕</button></h2>
+    <div id="fav-list"><div class="empty-state">No saved places yet</div></div>
+  </div>
+</div>
 
 <script>
-  // ── Config — fill these from your Supabase project settings ──────────────
-  const SUPABASE_URL      = "https://uqjjxlccxwpwwmdgpjla.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxamp4bGNjeHdwd3dtZGdwamxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNTY0NzYsImV4cCI6MjA5NzczMjQ3Nn0.4F_jCwZCdMysSwD9LP48sSC7CEvDFYGl1FoCTRekH0E";
-  // ─────────────────────────────────────────────────────────────────────────
+const SUPABASE_URL      = "https://uqjjxlccxwpwwmdgpjla.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxamp4bGNjeHdwd3dtZGdwamxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNTY0NzYsImV4cCI6MjA5NzczMjQ3Nn0.4F_jCwZCdMysSwD9LP48sSC7CEvDFYGl1FoCTRekH0E";
 
-  const { createClient } = supabase;
-  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const CATEGORIES = ["cafe","restaurant","attraction","outdoor","family","adventure","thrift"];
-  const COLORS     = ["#4e79a7","#f28e2b","#e15759","#76b7b2","#59a14f","#edc948","#b07aa1"];
+const CAT_LABELS = { cafe:"Cafes", restaurant:"Restaurants", attraction:"Attractions", outdoor:"Outdoor & nature", family:"Family & kids", adventure:"Adventure", thrift:"Thrift & vintage" };
+const COLORS = ["#4e79a7","#f28e2b","#e15759","#76b7b2","#59a14f","#edc948","#b07aa1"];
+const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const PRICE_STR = { 1:"R", 2:"RR", 3:"RRR", 4:"RRRR" };
 
-  let chart = null;
+// ── State ──────────────────────────────────────────────────────────────────
+let allVenues = [];
+let userLat = null, userLng = null;
+let activeCat = "";
+let dateMode = false;
+let sortMode = "rating";
+let favIds = new Set();
+let deviceId = localStorage.getItem("device_id") || (() => { const id = crypto.randomUUID(); localStorage.setItem("device_id", id); return id; })();
+let catChart = null, valueChart = null;
+let currentDetailVenue = null;
 
-  async function loadSummary() {
-    // Fetch exact counts per category from the server — avoids the 1000-row client limit.
-    const counts = Object.fromEntries(CATEGORIES.map(c => [c, 0]));
-    let total = 0;
+// ── Helpers ────────────────────────────────────────────────────────────────
+function haversineKm(lat1, lng1, lat2, lng2) {
+  const R = 6371, dLat = (lat2-lat1)*Math.PI/180, dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
 
-    await Promise.all(CATEGORIES.map(async cat => {
-      const { count, error } = await sb
-        .from("venues")
-        .select("*", { count: "exact", head: true })
-        .eq("category", cat);
-      if (!error) { counts[cat] = count; total += count; }
-    }));
+function isOpenNow(oh) {
+  if (!oh || !oh.periods) return null;
+  const now = new Date();
+  const day = now.getDay(), time = now.getHours() * 100 + now.getMinutes();
+  for (const p of oh.periods) {
+    if (!p.open) continue;
+    const oDay = p.open.day, oTime = (p.open.hour||0)*100 + (p.open.minute||0);
+    if (!p.close) return true;
+    const cDay = p.close.day, cTime = (p.close.hour||0)*100 + (p.close.minute||0);
+    if (oDay === cDay) { if (day === oDay && time >= oTime && time < cTime) return true; }
+    else { if (day === oDay && time >= oTime) return true; if (day === cDay && time < cTime) return true; }
+  }
+  return false;
+}
 
-    document.getElementById("total-count").textContent = total;
+function todayHours(oh) {
+  if (!oh || !oh.weekdayDescriptions) return null;
+  const idx = (new Date().getDay() + 6) % 7; // Google: Mon=0
+  return oh.weekdayDescriptions[idx] || null;
+}
 
-    // Category summary cards
-    const cardsEl = document.getElementById("summary-cards");
-    // Remove old category cards if any
-    cardsEl.querySelectorAll(".cat-card").forEach(el => el.remove());
-    CATEGORIES.forEach(cat => {
-      const div = document.createElement("div");
-      div.className = "card cat-card";
-      div.innerHTML = `<div class="count">${counts[cat]}</div><div class="label">${cat}</div>`;
-      cardsEl.appendChild(div);
+// ── Data fetch ─────────────────────────────────────────────────────────────
+async function fetchAllVenues() {
+  const PAGE = 1000;
+  let all = [], from = 0;
+  while (true) {
+    const { data, error } = await sb.from("venues")
+      .select("id,place_id,name,category,area,lat,lng,rating,review_count,price_level,cuisine,is_date_spot,review_summary,standout_items,opening_hours")
+      .range(from, from + PAGE - 1);
+    if (error || !data) break;
+    all = all.concat(data);
+    if (data.length < PAGE) break;
+    from += PAGE;
+  }
+  return all;
+}
+
+async function loadFavourites() {
+  const { data } = await sb.from("favourites").select("venue_id").eq("device_id", deviceId);
+  favIds = new Set((data || []).map(r => r.venue_id));
+}
+
+// ── Filter & sort ──────────────────────────────────────────────────────────
+function getVisible() {
+  let v = allVenues;
+  if (activeCat) v = v.filter(x => x.category === activeCat);
+  if (dateMode) v = v.filter(x => x.is_date_spot === true);
+  if (sortMode === "rating") v = [...v].sort((a,b) => (b.rating||0)-(a.rating||0));
+  else if (sortMode === "value") v = [...v].sort((a,b) => { const va=(a.rating||0)/(a.price_level||2), vb=(b.rating||0)/(b.price_level||2); return vb-va; });
+  else if (sortMode === "distance" && userLat !== null) v = [...v].sort((a,b) => haversineKm(userLat,userLng,a.lat,a.lng)-haversineKm(userLat,userLng,b.lat,b.lng));
+  else if (sortMode === "reviews") v = [...v].sort((a,b)=>(b.review_count||0)-(a.review_count||0));
+  return v;
+}
+
+// ── Render venues ──────────────────────────────────────────────────────────
+function renderVenues(venues) {
+  const el = document.getElementById("venue-list");
+  document.getElementById("result-count").textContent = `${venues.length} places`;
+  if (!venues.length) {
+    el.innerHTML = `<div class="empty-state">${dateMode ? "No date spots found in this category yet — enrichment runs weekly." : "No venues found."}</div>`;
+    return;
+  }
+  el.innerHTML = venues.map(v => {
+    const dist = userLat !== null ? `${haversineKm(userLat,userLng,v.lat,v.lng).toFixed(1)} km · ` : "";
+    const price = v.price_level ? `<span class="price-tag">${PRICE_STR[v.price_level]}</span>` : "";
+    const heart = v.is_date_spot ? `<span class="heart-icon">♥</span>` : "";
+    const saved = favIds.has(v.id) ? `<span style="color:var(--coral);font-size:0.8rem">♥</span>` : "";
+    return `<div class="venue-card" data-id="${v.id}">
+      <div class="venue-card-body">
+        <div class="venue-name">${escHtml(v.name)}</div>
+        <div class="venue-meta">
+          <span class="badge">${v.category}</span>
+          ${price}
+          <span class="area-tag">${dist}${v.area || ""}</span>
+        </div>
+      </div>
+      <div class="venue-card-right">
+        <div class="rating-pill"><span class="star">★</span>${v.rating != null ? v.rating.toFixed(1) : "—"}</div>
+        <div class="review-count">${v.review_count != null ? v.review_count.toLocaleString() : ""}</div>
+        <div>${heart}${saved}</div>
+      </div>
+    </div>`;
+  }).join("");
+
+  el.querySelectorAll(".venue-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const v = allVenues.find(x => x.id == card.dataset.id);
+      if (v) openDetail(v);
     });
+  });
+}
 
-    // Bar chart
-    const ctx = document.getElementById("cat-chart").getContext("2d");
-    if (chart) chart.destroy();
-    chart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: CATEGORIES,
-        datasets: [{
-          label: "Venues by category",
-          data: CATEGORIES.map(c => counts[c]),
-          backgroundColor: COLORS,
-          borderRadius: 4,
-        }]
-      },
-      options: {
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
-      }
-    });
-  }
+function escHtml(s) { return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
-  async function fetchAllVenues(category = "") {
-    const PAGE = 1000;
-    let all = [], from = 0, done = false;
-    while (!done) {
-      let q = sb.from("venues")
-        .select("name,category,area,rating,review_count")
-        .order("rating", { ascending: false })
-        .range(from, from + PAGE - 1);
-      if (category) q = q.eq("category", category);
-      const { data, error } = await q;
-      if (error) return { data: null, error };
-      all = all.concat(data);
-      done = data.length < PAGE;
-      from += PAGE;
-    }
-    return { data: all, error: null };
-  }
-
-  async function loadVenues(category = "") {
-    const statusEl = document.getElementById("status");
-    statusEl.textContent = "Loading…";
-
-    const { data, error } = await fetchAllVenues(category);
-    const tbody = document.getElementById("venue-tbody");
-
-    if (error) {
-      tbody.innerHTML = `<tr><td colspan="5" class="empty">Error loading venues: ${error.message}</td></tr>`;
-      statusEl.textContent = "";
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" class="empty">No venues found${category ? " for category: " + category : ""}.</td></tr>`;
-      statusEl.textContent = "";
-      return;
-    }
-
-    statusEl.textContent = `${data.length} venues`;
-    tbody.innerHTML = data.map(v => `
-      <tr>
-        <td>${v.name}</td>
-        <td><span class="badge">${v.category}</span></td>
-        <td>${v.area || "—"}</td>
-        <td>${v.rating != null ? v.rating.toFixed(1) : "—"}</td>
-        <td>${v.review_count != null ? v.review_count.toLocaleString() : "—"}</td>
-      </tr>`).join("");
-  }
-
-  document.getElementById("cat-filter").addEventListener("change", e => {
-    loadVenues(e.target.value);
+// ── Charts ─────────────────────────────────────────────────────────────────
+function renderCharts(venues) {
+  const catCounts = Object.keys(CAT_LABELS).map(c => venues.filter(v => v.category === c).length);
+  const catCtx = document.getElementById("cat-chart").getContext("2d");
+  if (catChart) catChart.destroy();
+  catChart = new Chart(catCtx, {
+    type: "bar",
+    data: { labels: Object.values(CAT_LABELS), datasets: [{ data: catCounts, backgroundColor: COLORS, borderRadius: 3 }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, animation: false }
   });
 
-  // Initial load
-  loadSummary();
-  loadVenues();
+  const top5 = [...venues].filter(v => v.rating && v.price_level)
+    .sort((a,b) => (b.rating/b.price_level)-(a.rating/a.price_level)).slice(0,5);
+  const valCtx = document.getElementById("value-chart").getContext("2d");
+  if (valueChart) valueChart.destroy();
+  valueChart = new Chart(valCtx, {
+    type: "bar",
+    data: {
+      labels: top5.map(v => v.name.length > 18 ? v.name.slice(0,18)+"…" : v.name),
+      datasets: [{ data: top5.map(v => +(v.rating/v.price_level).toFixed(2)), backgroundColor: "#4e79a7", borderRadius: 3 }]
+    },
+    options: { indexAxis: "y", plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } }, animation: false }
+  });
+}
+
+// ── Detail panel ───────────────────────────────────────────────────────────
+function openDetail(v) {
+  currentDetailVenue = v;
+  document.getElementById("d-name").textContent = v.name;
+  const priceStr = v.price_level ? PRICE_STR[v.price_level] : "";
+  const cuisine = v.cuisine ? ` · ${v.cuisine}` : "";
+  document.getElementById("d-sub").textContent = `${CAT_LABELS[v.category] || v.category}${cuisine} · ${v.area || "Cape Town"}`;
+  document.getElementById("d-rating").textContent = v.rating != null ? `${v.rating.toFixed(1)} ★` : "—";
+  document.getElementById("d-reviews").textContent = v.review_count != null ? v.review_count.toLocaleString() : "—";
+  document.getElementById("d-price").textContent = priceStr || "—";
+
+  const openNow = isOpenNow(v.opening_hours);
+  const statusEl = document.getElementById("d-status");
+  if (openNow === null) statusEl.innerHTML = "—";
+  else if (openNow) statusEl.innerHTML = `<span class="open-badge open">● Open</span>`;
+  else statusEl.innerHTML = `<span class="open-badge closed">● Closed</span>`;
+
+  // Directions
+  const dirLink = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(v.name + " Cape Town")}`;
+  document.getElementById("d-directions").href = dirLink;
+
+  // Favourite button
+  updateFavBtn(v.id);
+
+  // AI summary
+  const sumEl = document.getElementById("d-summary");
+  if (v.review_summary) { sumEl.textContent = v.review_summary; sumEl.className = "ai-summary"; }
+  else { sumEl.textContent = "AI summary not yet generated — enrichment runs weekly."; sumEl.className = "ai-summary placeholder"; }
+
+  // Tags
+  const tagsEl = document.getElementById("d-tags");
+  const tags = [];
+  if (v.is_date_spot) tags.push(`<span class="tag-chip date">♥ Good for dates</span>`);
+  if (v.cuisine) tags.push(`<span class="tag-chip vibe">${escHtml(v.cuisine)}</span>`);
+  if (v.standout_items && v.standout_items.length) v.standout_items.slice(0,3).forEach(i => tags.push(`<span class="tag-chip item">✦ ${escHtml(i)}</span>`));
+  tagsEl.innerHTML = tags.join("");
+
+  // Hours
+  const hoursEl = document.getElementById("d-hours");
+  const hoursLabel = document.getElementById("hours-label");
+  const oh = v.opening_hours;
+  if (oh && oh.weekdayDescriptions) {
+    hoursLabel.style.display = "block";
+    const todayIdx = new Date().getDay(); // 0=Sun
+    const googleIdx = (todayIdx + 6) % 7; // Google Mon=0
+    hoursEl.innerHTML = oh.weekdayDescriptions.map((line, i) => {
+      const [day, ...rest] = line.split(": ");
+      return `<div class="hours-row${i === googleIdx ? " today" : ""}"><span>${day}</span><span>${rest.join(": ")}</span></div>`;
+    }).join("");
+  } else { hoursLabel.style.display = "none"; hoursEl.innerHTML = ""; }
+
+  document.getElementById("detail-overlay").classList.remove("hidden");
+}
+
+function updateFavBtn(venueId) {
+  const btn = document.getElementById("d-fav-btn");
+  if (favIds.has(venueId)) { btn.textContent = "♥ Saved"; btn.classList.add("fav-active"); }
+  else { btn.textContent = "♡ Save"; btn.classList.remove("fav-active"); }
+}
+
+document.getElementById("d-fav-btn").addEventListener("click", async () => {
+  if (!currentDetailVenue) return;
+  const id = currentDetailVenue.id;
+  if (favIds.has(id)) {
+    await sb.from("favourites").delete().eq("device_id", deviceId).eq("venue_id", id);
+    favIds.delete(id);
+  } else {
+    await sb.from("favourites").upsert({ device_id: deviceId, venue_id: id });
+    favIds.add(id);
+  }
+  updateFavBtn(id);
+  refresh();
+});
+
+document.getElementById("detail-close").addEventListener("click", () => document.getElementById("detail-overlay").classList.add("hidden"));
+document.getElementById("detail-overlay").addEventListener("click", e => { if (e.target === document.getElementById("detail-overlay")) document.getElementById("detail-overlay").classList.add("hidden"); });
+
+// ── Favourites overlay ─────────────────────────────────────────────────────
+document.getElementById("fav-btn").addEventListener("click", () => {
+  const favVenues = allVenues.filter(v => favIds.has(v.id));
+  const el = document.getElementById("fav-list");
+  if (!favVenues.length) { el.innerHTML = `<div class="empty-state">No saved places yet — tap ♡ on any venue to save it.</div>`; }
+  else { el.innerHTML = favVenues.map(v => `<div class="venue-card" style="cursor:pointer" onclick="openDetail(${JSON.stringify(v).replace(/"/g,'&quot;')})">
+    <div class="venue-card-body"><div class="venue-name">${escHtml(v.name)}</div>
+    <div class="venue-meta"><span class="badge">${v.category}</span><span class="area-tag">${v.area||""}</span></div></div>
+    <div class="venue-card-right"><div class="rating-pill"><span class="star">★</span>${v.rating!=null?v.rating.toFixed(1):"—"}</div></div>
+  </div>`).join(""); }
+  document.getElementById("fav-overlay").classList.remove("hidden");
+});
+document.getElementById("fav-close").addEventListener("click", () => document.getElementById("fav-overlay").classList.add("hidden"));
+document.getElementById("fav-overlay").addEventListener("click", e => { if (e.target === document.getElementById("fav-overlay")) document.getElementById("fav-overlay").classList.add("hidden"); });
+
+// ── Location ───────────────────────────────────────────────────────────────
+document.getElementById("loc-btn").addEventListener("click", () => {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(pos => {
+    userLat = pos.coords.latitude; userLng = pos.coords.longitude;
+    document.getElementById("loc-btn").classList.add("active");
+    document.getElementById("loc-btn").textContent = "📍 Location on";
+    document.getElementById("sort-select").value = "distance";
+    sortMode = "distance"; refresh();
+  });
+});
+
+// ── Browse controls ────────────────────────────────────────────────────────
+document.getElementById("pill-row").addEventListener("click", e => {
+  const pill = e.target.closest(".pill");
+  if (!pill) return;
+  document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+  pill.classList.add("active");
+  activeCat = pill.dataset.cat;
+  refresh();
+});
+
+document.getElementById("date-toggle").addEventListener("click", () => {
+  dateMode = !dateMode;
+  document.getElementById("date-toggle").classList.toggle("active", dateMode);
+  refresh();
+});
+
+document.getElementById("sort-select").addEventListener("change", e => { sortMode = e.target.value; refresh(); });
+
+function refresh() {
+  const visible = getVisible();
+  renderVenues(visible);
+  renderCharts(visible);
+}
+
+// ── Chat assistant ─────────────────────────────────────────────────────────
+document.querySelectorAll(".chip").forEach(chip => {
+  chip.addEventListener("click", () => { document.getElementById("chat-input").value = chip.textContent; submitChat(); });
+});
+document.getElementById("chat-btn").addEventListener("click", submitChat);
+document.getElementById("chat-input").addEventListener("keydown", e => { if (e.key === "Enter") submitChat(); });
+
+async function submitChat() {
+  const q = document.getElementById("chat-input").value.trim();
+  if (!q) return;
+  const resultEl = document.getElementById("chat-result");
+  const btn = document.getElementById("chat-btn");
+  btn.disabled = true; btn.textContent = "…";
+  resultEl.style.display = "block"; resultEl.className = "chat-result"; resultEl.textContent = "Searching…";
+
+  // Local filter fallback while AI enrichment is pending
+  const lq = q.toLowerCase();
+  let filtered = allVenues;
+  if (lq.includes("date") || lq.includes("romantic") || lq.includes("girlfriend") || lq.includes("anniversary"))
+    filtered = filtered.filter(v => v.is_date_spot);
+  if (lq.includes("beach") || lq.includes("sea") || lq.includes("ocean"))
+    filtered = filtered.filter(v => ["outdoor","cafe","restaurant"].includes(v.category));
+  if (lq.includes("sushi")) filtered = filtered.filter(v => v.cuisine === "sushi" || v.name.toLowerCase().includes("sushi"));
+  if (lq.includes("thrift") || lq.includes("vintage")) filtered = filtered.filter(v => v.category === "thrift");
+  if (lq.includes("coffee") || lq.includes("cafe")) filtered = filtered.filter(v => v.category === "cafe");
+  if (lq.includes("outdoor") || lq.includes("hike") || lq.includes("nature")) filtered = filtered.filter(v => v.category === "outdoor");
+  if (lq.includes("family") || lq.includes("kids") || lq.includes("children")) filtered = filtered.filter(v => v.category === "family");
+  if (lq.includes("adventure") || lq.includes("kayak") || lq.includes("surf")) filtered = filtered.filter(v => v.category === "adventure");
+  filtered = filtered.sort((a,b) => (b.rating||0)-(a.rating||0)).slice(0, 20);
+
+  if (!filtered.length) {
+    resultEl.textContent = `No matches found for "${q}". Try a different search.`;
+  } else {
+    resultEl.innerHTML = `Found <strong>${filtered.length}</strong> places for "<em>${escHtml(q)}</em>"${filtered[0] ? ` — top pick: <strong>${escHtml(filtered[0].name)}</strong> (${filtered[0].rating?.toFixed(1) || "—"} ★)` : ""}. <em style="color:var(--muted);font-size:0.82rem">Full AI search available after venue enrichment.</em>`;
+    renderVenues(filtered);
+    renderCharts(filtered);
+  }
+  btn.disabled = false; btn.textContent = "Search";
+}
+
+// ── Boot ───────────────────────────────────────────────────────────────────
+(async () => {
+  await loadFavourites();
+  allVenues = await fetchAllVenues();
+  document.getElementById("header-sub").textContent = `${allVenues.length} venues · Cape Town`;
+  refresh();
+})();
 </script>
 </body>
 </html>
