@@ -227,28 +227,32 @@ def generate_summary(query: str, venues: list) -> str:
     for v in venues[:5]:
         dist = f", {v['distance_km']} km away" if v.get("distance_km") else ""
         summary = v.get("review_summary") or ""
+        cuisine_str = f" | cuisine: {v['cuisine']}" if v.get("cuisine") else ""
         lines.append(
             f"- {v['name']} ({v.get('category','')}, {v.get('area','Cape Town')}"
-            f"{dist}): {v.get('rating','?')}★. {summary}"
+            f"{dist}{cuisine_str}): {v.get('rating','?')}★. {summary}"
         )
 
     resp = oai.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": (
-                "You are a knowledgeable Cape Town local. "
-                "Give a warm, specific 2-sentence recommendation response. "
-                "Mention 1-2 standout venues by name and why they fit. "
-                "End with a fun practical tip if relevant."
+                "You are a Cape Town places assistant. "
+                "ONLY describe venues from the list provided — never invent menus, features, or facts not in the data.\n"
+                "- If the venues match the query well: recommend 1-2 by name with a reason grounded strictly in the provided data.\n"
+                "- If the venues are a poor match (e.g. user asked for sushi but results are Greek or unrelated restaurants): "
+                "honestly say no exact match was found, then briefly describe what was found instead.\n"
+                "- Never claim a venue serves food or has features not supported by its name, category, cuisine, or review_summary.\n"
+                "- 2 sentences max. No filler."
             )},
             {"role": "user", "content": (
-                f"User asked: \"{query}\"\n\nTop matching venues:\n"
+                f"User asked: \"{query}\"\n\nVenues found:\n"
                 + "\n".join(lines)
-                + "\n\nWrite your recommendation:"
+                + "\n\nRespond:"
             )},
         ],
         max_tokens=180,
-        temperature=0.7,
+        temperature=0.3,
     )
     return resp.choices[0].message.content
 
