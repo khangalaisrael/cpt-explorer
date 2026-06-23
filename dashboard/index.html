@@ -11,122 +11,141 @@
     :root {
       --navy: #1a1a2e; --coral: #e94560; --bg: #f0f2f5;
       --card: #fff; --border: #e2e4e8; --text: #1a1a2e; --muted: #6b7280;
+      --green: #059669; --amber: #f59e0b;
     }
-    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
 
     /* ── Header ── */
-    header { background: var(--navy); color: #fff; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; position: sticky; top: 0; z-index: 100; }
+    header { background: var(--navy); color: #fff; padding: 0.9rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; position: sticky; top: 0; z-index: 100; }
     .header-left { display: flex; align-items: center; gap: 0.75rem; }
-    .pulse-dot { width: 10px; height: 10px; background: #4ade80; border-radius: 50%; flex-shrink: 0; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.2)} }
-    .header-title h1 { font-size: 1.15rem; font-weight: 700; }
-    .header-title p { font-size: 0.75rem; opacity: 0.6; margin-top: 1px; }
+    .pulse-dot { width: 9px; height: 9px; background: #4ade80; border-radius: 50%; flex-shrink: 0; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
+    .header-title h1 { font-size: 1.1rem; font-weight: 700; }
+    .header-title p { font-size: 0.72rem; opacity: .6; margin-top: 1px; }
     .header-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
-    .btn-ghost { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 6px; padding: 0.4rem 0.75rem; font-size: 0.8rem; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
-    .btn-ghost:hover { background: rgba(255,255,255,0.2); }
+    .btn-ghost { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); color: #fff; border-radius: 6px; padding: .35rem .7rem; font-size: .78rem; cursor: pointer; transition: background .15s; white-space: nowrap; }
+    .btn-ghost:hover { background: rgba(255,255,255,.2); }
     .btn-ghost.active { background: var(--coral); border-color: var(--coral); }
 
     /* ── Chat ── */
-    .chat-section { background: var(--card); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem; }
-    .chat-input-row { display: flex; gap: 0.5rem; max-width: 720px; margin: 0 auto; }
-    .chat-input-row input { flex: 1; padding: 0.6rem 1rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.95rem; outline: none; transition: border-color 0.15s; }
-    .chat-input-row input:focus { border-color: var(--navy); }
-    .btn-primary { background: var(--navy); color: #fff; border: none; border-radius: 8px; padding: 0.6rem 1.25rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; white-space: nowrap; }
-    .btn-primary:hover { opacity: 0.85; }
-    .btn-primary:disabled { opacity: 0.5; cursor: default; }
-    .chip-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.65rem; max-width: 720px; margin-left: auto; margin-right: auto; }
-    .chip { background: #f0f2f5; border: 1px solid var(--border); border-radius: 99px; padding: 0.3rem 0.75rem; font-size: 0.78rem; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+    .chat-section { background: var(--card); border-bottom: 1px solid var(--border); padding: .9rem 1.5rem; }
+    .chat-row { display: flex; gap: .5rem; max-width: 780px; margin: 0 auto; }
+    .chat-row input { flex: 1; padding: .55rem 1rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: .92rem; outline: none; transition: border-color .15s; }
+    .chat-row input:focus { border-color: var(--navy); }
+    .btn-primary { background: var(--navy); color: #fff; border: none; border-radius: 8px; padding: .55rem 1.2rem; font-size: .88rem; font-weight: 600; cursor: pointer; transition: opacity .15s; white-space: nowrap; }
+    .btn-primary:hover { opacity: .85; }
+    .btn-primary:disabled { opacity: .5; cursor: default; }
+    .chip-row { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: .55rem; max-width: 780px; margin-left: auto; margin-right: auto; }
+    .chip { background: #f0f2f5; border: 1px solid var(--border); border-radius: 99px; padding: .28rem .7rem; font-size: .76rem; color: var(--muted); cursor: pointer; transition: all .15s; }
     .chip:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
-    .chat-result { max-width: 720px; margin: 0.75rem auto 0; background: #eef2ff; border-left: 3px solid var(--navy); border-radius: 6px; padding: 0.75rem 1rem; font-size: 0.88rem; line-height: 1.5; }
-    .chat-result.error { background: #fff0f0; border-color: var(--coral); }
-    .chat-coming-soon { max-width: 720px; margin: 0.5rem auto 0; font-size: 0.78rem; color: var(--muted); text-align: center; }
+
+    /* chat result bubble */
+    #chat-result-wrap { max-width: 780px; margin: .75rem auto 0; display: none; }
+    .chat-bubble { background: #eef2ff; border-left: 3px solid var(--navy); border-radius: 6px; padding: .75rem 1rem; font-size: .88rem; line-height: 1.55; margin-bottom: .75rem; }
+    .chat-bubble.error { background: #fff0f0; border-color: var(--coral); }
+    .chat-bubble .intent-tag { font-size: .72rem; color: var(--muted); margin-bottom: .35rem; }
+    .chat-clear { font-size: .76rem; color: var(--muted); cursor: pointer; margin-top: .4rem; display: inline-block; text-decoration: underline; }
+    #chat-venues { display: flex; flex-direction: column; gap: .5rem; }
 
     /* ── Browse controls ── */
-    .browse-bar { max-width: 1200px; margin: 1rem auto; padding: 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-    .pill-row { display: flex; gap: 0.4rem; flex-wrap: wrap; flex: 1; }
-    .pill { background: var(--card); border: 1.5px solid var(--border); border-radius: 99px; padding: 0.35rem 0.9rem; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--text); }
+    .browse-bar { max-width: 1260px; margin: .85rem auto .5rem; padding: 0 1.5rem; display: flex; flex-direction: column; gap: .6rem; }
+    .filter-row { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+    .pill { background: var(--card); border: 1.5px solid var(--border); border-radius: 99px; padding: .3rem .85rem; font-size: .8rem; font-weight: 500; cursor: pointer; transition: all .15s; color: var(--text); white-space: nowrap; }
     .pill:hover { border-color: var(--navy); color: var(--navy); }
     .pill.active { background: var(--navy); color: #fff; border-color: var(--navy); }
-    .date-toggle { background: var(--card); border: 1.5px solid var(--border); border-radius: 99px; padding: 0.35rem 0.9rem; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--muted); white-space: nowrap; }
+    .price-pill { background: var(--card); border: 1.5px solid var(--border); border-radius: 99px; padding: .3rem .85rem; font-size: .8rem; font-weight: 600; cursor: pointer; transition: all .15s; color: var(--green); white-space: nowrap; }
+    .price-pill:hover { border-color: var(--green); }
+    .price-pill.active { background: var(--green); color: #fff; border-color: var(--green); }
+    .date-toggle { background: var(--card); border: 1.5px solid var(--border); border-radius: 99px; padding: .3rem .85rem; font-size: .8rem; font-weight: 500; cursor: pointer; transition: all .15s; color: var(--muted); white-space: nowrap; }
     .date-toggle.active { background: var(--coral); color: #fff; border-color: var(--coral); }
-    .sort-select { padding: 0.35rem 0.75rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.82rem; background: var(--card); cursor: pointer; color: var(--text); }
-    .result-count { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+    .sort-select, .area-select { padding: .3rem .75rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: .8rem; background: var(--card); cursor: pointer; color: var(--text); }
+    .btn-clear { font-size: .76rem; color: var(--muted); border: 1px solid var(--border); border-radius: 6px; padding: .3rem .65rem; background: var(--card); cursor: pointer; }
+    .btn-clear:hover { border-color: var(--coral); color: var(--coral); }
+    .result-count { font-size: .78rem; color: var(--muted); margin-left: auto; white-space: nowrap; }
 
-    /* ── Content grid ── */
-    .content-grid { max-width: 1200px; margin: 0 auto 2rem; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr 320px; gap: 1.25rem; }
-    @media (max-width: 900px) { .content-grid { grid-template-columns: 1fr; } .charts-col { display: none; } }
+    /* ── Content ── */
+    .content-grid { max-width: 1260px; margin: 0 auto 1.5rem; padding: 0 1.5rem; display: grid; grid-template-columns: 1fr 300px; gap: 1.25rem; }
+    @media(max-width:900px){ .content-grid{grid-template-columns:1fr} .charts-col{display:none} }
 
     /* ── Venue cards ── */
-    #venue-list { display: flex; flex-direction: column; gap: 0.6rem; }
-    .venue-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s; display: flex; align-items: center; gap: 0.75rem; }
-    .venue-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: #c5c9d3; }
+    #venue-list { display: flex; flex-direction: column; gap: .55rem; }
+    .venue-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: .85rem 1rem; cursor: pointer; transition: box-shadow .15s, border-color .15s; display: flex; align-items: center; gap: .75rem; }
+    .venue-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.09); border-color: #c5c9d3; }
     .venue-card-body { flex: 1; min-width: 0; }
-    .venue-name { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .venue-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.2rem; flex-wrap: wrap; }
-    .badge { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 99px; font-size: 0.72rem; font-weight: 600; background: #eef2ff; color: #3949ab; text-transform: capitalize; }
-    .price-tag { font-size: 0.75rem; color: #059669; font-weight: 600; }
-    .area-tag { font-size: 0.75rem; color: var(--muted); }
-    .dist-tag { font-size: 0.75rem; color: var(--muted); }
-    .venue-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem; flex-shrink: 0; }
-    .rating-pill { display: flex; align-items: center; gap: 0.25rem; font-size: 0.85rem; font-weight: 700; color: var(--text); }
-    .rating-pill .star { color: #f59e0b; }
-    .review-count { font-size: 0.72rem; color: var(--muted); }
-    .heart-icon { font-size: 0.9rem; color: var(--coral); }
+    .venue-name { font-weight: 600; font-size: .92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .venue-meta { display: flex; align-items: center; gap: .45rem; margin-top: .18rem; flex-wrap: wrap; }
+    .badge { display: inline-block; padding: .13rem .5rem; border-radius: 99px; font-size: .7rem; font-weight: 600; background: #eef2ff; color: #3949ab; text-transform: capitalize; }
+    .price-tag { font-size: .73rem; color: var(--green); font-weight: 700; }
+    .area-tag { font-size: .73rem; color: var(--muted); }
+    .venue-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: .25rem; flex-shrink: 0; }
+    .rating-pill { display: flex; align-items: center; gap: .2rem; font-size: .82rem; font-weight: 700; }
+    .star { color: var(--amber); }
+    .review-count { font-size: .7rem; color: var(--muted); }
+    .heart-icon { font-size: .85rem; color: var(--coral); }
+    .dist-tag { font-size: .7rem; color: var(--muted); }
+    .ai-snippet { font-size: .74rem; color: var(--muted); margin-top: .2rem; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
     .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); background: var(--card); border-radius: 10px; border: 1px solid var(--border); }
 
-    /* ── Charts sidebar ── */
-    .charts-col { display: flex; flex-direction: column; gap: 1rem; }
-    .chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
-    .chart-card h3 { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
+    /* skeletons */
+    .skel-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: .85rem 1rem; display: flex; flex-direction: column; gap: .45rem; }
+    .skeleton { background: linear-gradient(90deg,#e8eaed 25%,#f5f5f5 50%,#e8eaed 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 5px; height: 13px; }
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-    /* ── Detail overlay ── */
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: flex; align-items: flex-end; justify-content: center; }
+    /* ── Sidebar charts ── */
+    .charts-col { display: flex; flex-direction: column; gap: .85rem; }
+    .chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: .9rem; }
+    .chart-card h3 { font-size: .73rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .6rem; }
+
+    /* ── Analytics section ── */
+    .analytics-section { max-width: 1260px; margin: 0 auto 2rem; padding: 0 1.5rem; }
+    .analytics-section h2 { font-size: .85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .85rem; }
+    .analytics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+    .analytics-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+    .analytics-card h3 { font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: .75rem; }
+
+    /* ── Detail panel ── */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; display: flex; align-items: flex-end; justify-content: center; }
     .overlay.hidden { display: none; }
     .panel { background: var(--card); border-radius: 16px 16px 0 0; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; padding-bottom: 2rem; }
-    .panel-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 1.25rem 1.25rem 0; gap: 0.5rem; }
-    .panel-close { background: #f0f2f5; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); }
-    .panel-title { font-size: 1.15rem; font-weight: 700; line-height: 1.3; }
-    .panel-subtitle { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
-    .panel-body { padding: 1rem 1.25rem 0; }
-    .stats-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
-    .stat-box { flex: 1; background: #f8f9fa; border-radius: 8px; padding: 0.65rem; text-align: center; }
-    .stat-val { font-size: 1.1rem; font-weight: 700; }
-    .stat-lbl { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
-    .action-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
-    .action-btn { flex: 1; min-width: 100px; padding: 0.55rem 0.75rem; border-radius: 8px; border: 1.5px solid var(--border); background: var(--card); font-size: 0.85rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.15s; text-decoration: none; color: var(--text); display: block; }
+    .panel-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 1.2rem 1.2rem 0; gap: .5rem; }
+    .panel-close { background: #f0f2f5; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); flex-shrink: 0; }
+    .panel-title { font-size: 1.1rem; font-weight: 700; line-height: 1.3; }
+    .panel-subtitle { font-size: .8rem; color: var(--muted); margin-top: .15rem; }
+    .panel-body { padding: .9rem 1.2rem 0; }
+    .stats-row { display: flex; gap: .75rem; margin-bottom: .9rem; }
+    .stat-box { flex: 1; background: #f8f9fa; border-radius: 8px; padding: .6rem; text-align: center; }
+    .stat-val { font-size: 1rem; font-weight: 700; }
+    .stat-lbl { font-size: .68rem; color: var(--muted); margin-top: 2px; }
+    .action-row { display: flex; gap: .45rem; margin-bottom: .9rem; flex-wrap: wrap; }
+    .action-btn { flex: 1; min-width: 90px; padding: .5rem .65rem; border-radius: 8px; border: 1.5px solid var(--border); background: var(--card); font-size: .82rem; font-weight: 600; cursor: pointer; text-align: center; transition: all .15s; text-decoration: none; color: var(--text); display: block; }
     .action-btn:hover { border-color: var(--navy); color: var(--navy); }
     .action-btn.fav-active { border-color: var(--coral); color: var(--coral); }
-    .section-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.5rem; }
-    .ai-summary { background: #f8f9fa; border-radius: 8px; padding: 0.85rem; font-size: 0.88rem; line-height: 1.55; margin-bottom: 1rem; color: #374151; }
+    .section-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: .45rem; }
+    .ai-summary { background: #f8f9fa; border-radius: 8px; padding: .8rem; font-size: .86rem; line-height: 1.55; margin-bottom: .9rem; }
     .ai-summary.placeholder { color: var(--muted); font-style: italic; }
-    .tag-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
-    .tag-chip { padding: 0.25rem 0.65rem; border-radius: 99px; font-size: 0.75rem; font-weight: 500; border: 1px solid var(--border); }
+    .tag-chips { display: flex; gap: .35rem; flex-wrap: wrap; margin-bottom: .9rem; }
+    .tag-chip { padding: .22rem .6rem; border-radius: 99px; font-size: .73rem; font-weight: 500; border: 1px solid var(--border); }
     .tag-chip.date { background: #fff0f3; border-color: #fca5a5; color: var(--coral); }
     .tag-chip.item { background: #f0fdf4; border-color: #86efac; color: #15803d; }
     .tag-chip.vibe { background: #eff6ff; border-color: #93c5fd; color: #1d4ed8; }
-    .hours-list { font-size: 0.83rem; display: flex; flex-direction: column; gap: 0.3rem; }
-    .hours-row { display: flex; justify-content: space-between; padding: 0.3rem 0.5rem; border-radius: 4px; }
+    .hours-list { font-size: .81rem; display: flex; flex-direction: column; gap: .28rem; }
+    .hours-row { display: flex; justify-content: space-between; padding: .28rem .5rem; border-radius: 4px; }
     .hours-row.today { background: #eef2ff; font-weight: 600; }
-    .open-badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; }
+    .open-badge { display: inline-flex; align-items: center; gap: .25rem; padding: .18rem .55rem; border-radius: 99px; font-size: .73rem; font-weight: 600; }
     .open-badge.open { background: #f0fdf4; color: #15803d; }
     .open-badge.closed { background: #fff0f0; color: #dc2626; }
 
-    /* ── Favourites overlay ── */
-    .fav-panel { background: var(--card); border-radius: 16px 16px 0 0; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; padding: 1.25rem 1.25rem 2rem; }
-    .fav-panel h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
-
-    /* ── Loading skeleton ── */
-    .skeleton { background: linear-gradient(90deg, #e8eaed 25%, #f5f5f5 50%, #e8eaed 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 6px; height: 14px; }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-    .skel-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    /* ── Fav overlay ── */
+    .fav-panel { background: var(--card); border-radius: 16px 16px 0 0; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; padding: 1.2rem 1.2rem 2rem; }
+    .fav-panel h2 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
   </style>
 </head>
 <body>
 
-<!-- ── Header ─────────────────────────────────────────────────────────── -->
+<!-- ── Header ── -->
 <header>
   <div class="header-left">
-    <div class="pulse-dot" id="status-dot"></div>
+    <div class="pulse-dot"></div>
     <div class="header-title">
       <h1>Cape Town Explorer</h1>
       <p id="header-sub">Loading venues…</p>
@@ -138,73 +157,99 @@
   </div>
 </header>
 
-<!-- ── Chat assistant ─────────────────────────────────────────────────── -->
+<!-- ── Chat ── -->
 <div class="chat-section">
-  <div class="chat-input-row">
-    <input type="text" id="chat-input" placeholder="e.g. date spot near the beach, cheap sushi, something fun with my girlfriend…" />
+  <div class="chat-row">
+    <input type="text" id="chat-input" placeholder="Ask anything — ice cream, beef, date spot near Sea Point, I'm bored I want adrenaline…" />
     <button class="btn-primary" id="chat-btn">Search</button>
   </div>
   <div class="chip-row">
     <button class="chip">Date spot near the beach</button>
-    <button class="chip">Sushi spots</button>
-    <button class="chip">Thrift + coffee</button>
-    <button class="chip">Outdoor adventure</button>
-    <button class="chip">Family day out</button>
+    <button class="chip">Best sushi in Cape Town</button>
+    <button class="chip">Cheap breakfast</button>
+    <button class="chip">I'm bored, I want adrenaline</button>
+    <button class="chip">Indian food</button>
+    <button class="chip">Most reviewed cafes</button>
   </div>
-  <div id="chat-result" class="chat-result" style="display:none"></div>
-  <div class="chat-coming-soon" id="chat-note">AI enrichment runs weekly — results improve as venues are tagged</div>
+  <div id="chat-result-wrap">
+    <div class="chat-bubble" id="chat-bubble"></div>
+    <div id="chat-venues"></div>
+    <span class="chat-clear" id="chat-clear">✕ Clear search</span>
+  </div>
 </div>
 
-<!-- ── Browse controls ───────────────────────────────────────────────── -->
+<!-- ── Browse controls ── -->
 <div class="browse-bar">
-  <div class="pill-row" id="pill-row">
+  <div class="filter-row" id="cat-row">
     <button class="pill active" data-cat="">All</button>
     <button class="pill" data-cat="cafe">Cafes</button>
     <button class="pill" data-cat="restaurant">Restaurants</button>
     <button class="pill" data-cat="attraction">Attractions</button>
-    <button class="pill" data-cat="outdoor">Outdoor &amp; nature</button>
-    <button class="pill" data-cat="family">Family &amp; kids</button>
+    <button class="pill" data-cat="outdoor">Outdoor</button>
+    <button class="pill" data-cat="family">Family</button>
     <button class="pill" data-cat="adventure">Adventure</button>
-    <button class="pill" data-cat="thrift">Thrift &amp; vintage</button>
+    <button class="pill" data-cat="thrift">Thrift</button>
   </div>
-  <button class="date-toggle" id="date-toggle">♥ Date ideas</button>
-  <select class="sort-select" id="sort-select">
-    <option value="rating">Rating</option>
-    <option value="value">Value score</option>
-    <option value="distance">Distance from me</option>
-    <option value="reviews">Most reviewed</option>
-  </select>
-  <span class="result-count" id="result-count"></span>
+  <div class="filter-row">
+    <button class="date-toggle" id="date-toggle">♥ Date ideas</button>
+    <button class="price-pill" data-price="1">R</button>
+    <button class="price-pill" data-price="2">RR</button>
+    <button class="price-pill" data-price="3">RRR</button>
+    <button class="price-pill" data-price="4">RRRR</button>
+    <select class="area-select" id="area-select">
+      <option value="">All areas</option>
+      <option>V&amp;A Waterfront</option><option>City Bowl</option><option>Bo-Kaap</option>
+      <option>De Waterkant</option><option>Green Point</option><option>Sea Point</option>
+      <option>Clifton</option><option>Camps Bay</option><option>Bakoven</option>
+      <option>Hout Bay</option><option>Constantia</option><option>Tokai</option>
+      <option>Newlands</option><option>Claremont</option><option>Kenilworth</option>
+      <option>Wynberg</option><option>Rondebosch</option><option>Observatory</option>
+      <option>Woodstock</option><option>Salt River</option><option>Muizenberg</option>
+      <option>Kalk Bay</option><option>Fish Hoek</option><option>Simon's Town</option>
+      <option>Bloubergstrand</option><option>Table View</option><option>Milnerton</option>
+      <option>Durbanville</option><option>Stellenbosch</option><option>Franschhoek</option>
+    </select>
+    <select class="sort-select" id="sort-select">
+      <option value="rating">Top rated</option>
+      <option value="value">Best value</option>
+      <option value="distance">Nearest</option>
+      <option value="reviews">Most reviewed</option>
+    </select>
+    <button class="btn-clear" id="clear-all">Clear all</button>
+    <span class="result-count" id="result-count"></span>
+  </div>
 </div>
 
-<!-- ── Main content ───────────────────────────────────────────────────── -->
+<!-- ── Content ── -->
 <div class="content-grid">
   <div id="venue-list">
-    <!-- skeletons while loading -->
-    <div class="skel-card"><div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:35%"></div></div>
-    <div class="skel-card"><div class="skeleton" style="width:50%"></div><div class="skeleton" style="width:40%"></div></div>
-    <div class="skel-card"><div class="skeleton" style="width:55%"></div><div class="skeleton" style="width:30%"></div></div>
+    <div class="skel-card"><div class="skeleton" style="width:55%"></div><div class="skeleton" style="width:35%"></div></div>
+    <div class="skel-card"><div class="skeleton" style="width:48%"></div><div class="skeleton" style="width:40%"></div></div>
+    <div class="skel-card"><div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:30%"></div></div>
   </div>
   <div class="charts-col">
-    <div class="chart-card">
-      <h3>By category</h3>
-      <canvas id="cat-chart"></canvas>
-    </div>
-    <div class="chart-card">
-      <h3>Top 5 value score</h3>
-      <canvas id="value-chart"></canvas>
-    </div>
+    <div class="chart-card"><h3>By category</h3><canvas id="cat-chart"></canvas></div>
+    <div class="chart-card"><h3>Top 10 value</h3><canvas id="value-chart"></canvas></div>
   </div>
 </div>
 
-<!-- ── Venue detail overlay ───────────────────────────────────────────── -->
+<!-- ── Analytics ── -->
+<div class="analytics-section">
+  <h2>Analytics</h2>
+  <div class="analytics-grid">
+    <div class="analytics-card"><h3>Rating distribution</h3><canvas id="rating-hist"></canvas></div>
+    <div class="analytics-card"><h3>Price level breakdown</h3><canvas id="price-donut"></canvas></div>
+    <div class="analytics-card"><h3>Top 10 neighbourhoods</h3><canvas id="area-chart"></canvas></div>
+    <div class="analytics-card"><h3>Avg rating by category</h3><canvas id="avg-chart"></canvas></div>
+    <div class="analytics-card" style="grid-column:span 2"><h3>Top 10 most reviewed venues</h3><canvas id="reviewed-chart" height="60"></canvas></div>
+  </div>
+</div>
+
+<!-- ── Detail overlay ── -->
 <div class="overlay hidden" id="detail-overlay">
-  <div class="panel" id="detail-panel">
+  <div class="panel">
     <div class="panel-header">
-      <div>
-        <div class="panel-title" id="d-name"></div>
-        <div class="panel-subtitle" id="d-sub"></div>
-      </div>
+      <div><div class="panel-title" id="d-name"></div><div class="panel-subtitle" id="d-sub"></div></div>
       <button class="panel-close" id="detail-close">✕</button>
     </div>
     <div class="panel-body">
@@ -212,7 +257,7 @@
         <div class="stat-box"><div class="stat-val" id="d-rating">—</div><div class="stat-lbl">Rating</div></div>
         <div class="stat-box"><div class="stat-val" id="d-reviews">—</div><div class="stat-lbl">Reviews</div></div>
         <div class="stat-box"><div class="stat-val" id="d-price">—</div><div class="stat-lbl">Price</div></div>
-        <div class="stat-box"><div class="stat-val" id="d-status">—</div><div class="stat-lbl">Right now</div></div>
+        <div class="stat-box"><div class="stat-val" id="d-status">—</div><div class="stat-lbl">Now</div></div>
       </div>
       <div class="action-row">
         <button class="action-btn" id="d-fav-btn">♡ Save</button>
@@ -228,7 +273,7 @@
   </div>
 </div>
 
-<!-- ── Favourites overlay ─────────────────────────────────────────────── -->
+<!-- ── Favourites overlay ── -->
 <div class="overlay hidden" id="fav-overlay">
   <div class="fav-panel">
     <h2>Saved places <button class="panel-close" id="fav-close">✕</button></h2>
@@ -239,325 +284,380 @@
 <script>
 const SUPABASE_URL      = "https://uqjjxlccxwpwwmdgpjla.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxamp4bGNjeHdwd3dtZGdwamxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNTY0NzYsImV4cCI6MjA5NzczMjQ3Nn0.4F_jCwZCdMysSwD9LP48sSC7CEvDFYGl1FoCTRekH0E";
+const API_URL           = "https://cpt-explorer-pipeline.onrender.com";
 
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const CAT_LABELS = { cafe:"Cafes", restaurant:"Restaurants", attraction:"Attractions", outdoor:"Outdoor & nature", family:"Family & kids", adventure:"Adventure", thrift:"Thrift & vintage" };
+const CAT_LABELS = { cafe:"Cafes", restaurant:"Restaurants", attraction:"Attractions", outdoor:"Outdoor", family:"Family", adventure:"Adventure", thrift:"Thrift" };
 const COLORS = ["#4e79a7","#f28e2b","#e15759","#76b7b2","#59a14f","#edc948","#b07aa1"];
-const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const PRICE_STR = { 1:"R", 2:"RR", 3:"RRR", 4:"RRRR" };
+const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
-// ── State ──────────────────────────────────────────────────────────────────
-let allVenues = [];
-let userLat = null, userLng = null;
-let activeCat = "";
-let dateMode = false;
-let sortMode = "rating";
+// ── State ──
+let allVenues = [], userLat = null, userLng = null;
+let activeCat = "", dateMode = false, activePrice = null, activeArea = "", sortMode = "rating";
 let favIds = new Set();
 let deviceId = localStorage.getItem("device_id") || (() => { const id = crypto.randomUUID(); localStorage.setItem("device_id", id); return id; })();
-let catChart = null, valueChart = null;
+let charts = {};
 let currentDetailVenue = null;
+let chatActive = false;
 
-// ── Helpers ────────────────────────────────────────────────────────────────
-function haversineKm(lat1, lng1, lat2, lng2) {
-  const R = 6371, dLat = (lat2-lat1)*Math.PI/180, dLng = (lng2-lng1)*Math.PI/180;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+// ── Utils ──
+function km(lat1, lng1, lat2, lng2) {
+  const R=6371, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
-
+function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function isOpenNow(oh) {
-  if (!oh || !oh.periods) return null;
-  const now = new Date();
-  const day = now.getDay(), time = now.getHours() * 100 + now.getMinutes();
+  if (!oh||!oh.periods) return null;
+  const now=new Date(), day=now.getDay(), time=now.getHours()*100+now.getMinutes();
   for (const p of oh.periods) {
     if (!p.open) continue;
-    const oDay = p.open.day, oTime = (p.open.hour||0)*100 + (p.open.minute||0);
+    const oD=p.open.day, oT=(p.open.hour||0)*100+(p.open.minute||0);
     if (!p.close) return true;
-    const cDay = p.close.day, cTime = (p.close.hour||0)*100 + (p.close.minute||0);
-    if (oDay === cDay) { if (day === oDay && time >= oTime && time < cTime) return true; }
-    else { if (day === oDay && time >= oTime) return true; if (day === cDay && time < cTime) return true; }
+    const cD=p.close.day, cT=(p.close.hour||0)*100+(p.close.minute||0);
+    if (oD===cD){ if(day===oD&&time>=oT&&time<cT) return true; }
+    else { if(day===oD&&time>=oT) return true; if(day===cD&&time<cT) return true; }
   }
   return false;
 }
 
-function todayHours(oh) {
-  if (!oh || !oh.weekdayDescriptions) return null;
-  const idx = (new Date().getDay() + 6) % 7; // Google: Mon=0
-  return oh.weekdayDescriptions[idx] || null;
-}
-
-// ── Data fetch ─────────────────────────────────────────────────────────────
+// ── Fetch ──
 async function fetchAllVenues() {
-  const PAGE = 1000;
-  let all = [], from = 0;
-  while (true) {
-    const { data, error } = await sb.from("venues")
+  const PAGE=1000; let all=[], from=0;
+  while(true){
+    const {data,error}=await sb.from("venues")
       .select("id,place_id,name,category,area,lat,lng,rating,review_count,price_level,cuisine,is_date_spot,review_summary,standout_items,opening_hours")
-      .range(from, from + PAGE - 1);
-    if (error || !data) break;
-    all = all.concat(data);
-    if (data.length < PAGE) break;
-    from += PAGE;
+      .range(from,from+PAGE-1);
+    if(error||!data) break; all=all.concat(data);
+    if(data.length<PAGE) break; from+=PAGE;
   }
   return all;
 }
-
 async function loadFavourites() {
-  const { data } = await sb.from("favourites").select("venue_id").eq("device_id", deviceId);
-  favIds = new Set((data || []).map(r => r.venue_id));
+  const {data}=await sb.from("favourites").select("venue_id").eq("device_id",deviceId);
+  favIds=new Set((data||[]).map(r=>r.venue_id));
 }
 
-// ── Filter & sort ──────────────────────────────────────────────────────────
+// ── Filter & sort ──
 function getVisible() {
   let v = allVenues;
-  if (activeCat) v = v.filter(x => x.category === activeCat);
-  if (dateMode) v = v.filter(x => x.is_date_spot === true);
-  if (sortMode === "rating") v = [...v].sort((a,b) => (b.rating||0)-(a.rating||0));
-  else if (sortMode === "value") v = [...v].sort((a,b) => { const va=(a.rating||0)/(a.price_level||2), vb=(b.rating||0)/(b.price_level||2); return vb-va; });
-  else if (sortMode === "distance" && userLat !== null) v = [...v].sort((a,b) => haversineKm(userLat,userLng,a.lat,a.lng)-haversineKm(userLat,userLng,b.lat,b.lng));
-  else if (sortMode === "reviews") v = [...v].sort((a,b)=>(b.review_count||0)-(a.review_count||0));
+  if (activeCat) v=v.filter(x=>x.category===activeCat);
+  if (dateMode) v=v.filter(x=>x.is_date_spot===true);
+  if (activePrice) v=v.filter(x=>x.price_level!=null&&x.price_level<=activePrice);
+  if (activeArea) v=v.filter(x=>(x.area||"").toLowerCase().includes(activeArea.toLowerCase()));
+  if (sortMode==="rating") v=[...v].sort((a,b)=>(b.rating||0)-(a.rating||0));
+  else if (sortMode==="value") v=[...v].sort((a,b)=>{const va=(a.rating||0)/(a.price_level||2),vb=(b.rating||0)/(b.price_level||2);return vb-va;});
+  else if (sortMode==="distance"&&userLat!==null) v=[...v].sort((a,b)=>km(userLat,userLng,a.lat,a.lng)-km(userLat,userLng,b.lat,b.lng));
+  else if (sortMode==="reviews") v=[...v].sort((a,b)=>(b.review_count||0)-(a.review_count||0));
   return v;
 }
 
-// ── Render venues ──────────────────────────────────────────────────────────
-function renderVenues(venues) {
-  const el = document.getElementById("venue-list");
-  document.getElementById("result-count").textContent = `${venues.length} places`;
-  if (!venues.length) {
-    el.innerHTML = `<div class="empty-state">${dateMode ? "No date spots found in this category yet — enrichment runs weekly." : "No venues found."}</div>`;
-    return;
-  }
-  el.innerHTML = venues.map(v => {
-    const dist = userLat !== null ? `${haversineKm(userLat,userLng,v.lat,v.lng).toFixed(1)} km · ` : "";
-    const price = v.price_level ? `<span class="price-tag">${PRICE_STR[v.price_level]}</span>` : "";
-    const heart = v.is_date_spot ? `<span class="heart-icon">♥</span>` : "";
-    const saved = favIds.has(v.id) ? `<span style="color:var(--coral);font-size:0.8rem">♥</span>` : "";
-    return `<div class="venue-card" data-id="${v.id}">
-      <div class="venue-card-body">
-        <div class="venue-name">${escHtml(v.name)}</div>
-        <div class="venue-meta">
-          <span class="badge">${v.category}</span>
-          ${price}
-          <span class="area-tag">${dist}${v.area || ""}</span>
-        </div>
-      </div>
-      <div class="venue-card-right">
-        <div class="rating-pill"><span class="star">★</span>${v.rating != null ? v.rating.toFixed(1) : "—"}</div>
-        <div class="review-count">${v.review_count != null ? v.review_count.toLocaleString() : ""}</div>
-        <div>${heart}${saved}</div>
-      </div>
-    </div>`;
-  }).join("");
+// ── Card HTML ──
+function venueCardHtml(v, showSnippet=false) {
+  const dist = userLat!==null ? `<span class="dist-tag">${km(userLat,userLng,v.lat,v.lng).toFixed(1)}km</span>` : "";
+  const price = v.price_level ? `<span class="price-tag">${PRICE_STR[v.price_level]}</span>` : "";
+  const heart = v.is_date_spot ? `<span class="heart-icon">♥</span>` : "";
+  const saved = favIds.has(v.id) ? `<span style="color:var(--coral);font-size:.78rem">♥</span>` : "";
+  const snippet = showSnippet && v.review_summary ? `<div class="ai-snippet">${esc(v.review_summary)}</div>` : "";
+  return `<div class="venue-card" data-id="${v.id}">
+    <div class="venue-card-body">
+      <div class="venue-name">${esc(v.name)}</div>
+      <div class="venue-meta"><span class="badge">${v.category}</span>${price}<span class="area-tag">${v.area||""}</span>${dist}</div>
+      ${snippet}
+    </div>
+    <div class="venue-card-right">
+      <div class="rating-pill"><span class="star">★</span>${v.rating!=null?v.rating.toFixed(1):"—"}</div>
+      <div class="review-count">${v.review_count!=null?v.review_count.toLocaleString():""}</div>
+      <div>${heart}${saved}</div>
+    </div>
+  </div>`;
+}
 
-  el.querySelectorAll(".venue-card").forEach(card => {
-    card.addEventListener("click", () => {
-      const v = allVenues.find(x => x.id == card.dataset.id);
-      if (v) openDetail(v);
+function bindCards(container) {
+  container.querySelectorAll(".venue-card").forEach(card=>{
+    card.addEventListener("click",()=>{
+      const v=allVenues.find(x=>x.id==card.dataset.id);
+      if(v) openDetail(v);
     });
   });
 }
 
-function escHtml(s) { return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+// ── Render browse list ──
+function renderVenues(venues) {
+  const el=document.getElementById("venue-list");
+  document.getElementById("result-count").textContent=`${venues.length} places`;
+  if(!venues.length){el.innerHTML=`<div class="empty-state">No venues found. Try adjusting your filters.</div>`;return;}
+  el.innerHTML=venues.map(v=>venueCardHtml(v)).join("");
+  bindCards(el);
+}
 
-// ── Charts ─────────────────────────────────────────────────────────────────
-function renderCharts(venues) {
-  const catCounts = Object.keys(CAT_LABELS).map(c => venues.filter(v => v.category === c).length);
-  const catCtx = document.getElementById("cat-chart").getContext("2d");
-  if (catChart) catChart.destroy();
-  catChart = new Chart(catCtx, {
-    type: "bar",
-    data: { labels: Object.values(CAT_LABELS), datasets: [{ data: catCounts, backgroundColor: COLORS, borderRadius: 3 }] },
-    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, animation: false }
+// ── Charts ──
+function destroyChart(id){ if(charts[id]){charts[id].destroy();delete charts[id];} }
+function renderSideCharts(venues) {
+  const catCounts=Object.keys(CAT_LABELS).map(c=>venues.filter(v=>v.category===c).length);
+  destroyChart("cat");
+  charts["cat"]=new Chart(document.getElementById("cat-chart").getContext("2d"),{
+    type:"bar",
+    data:{labels:Object.values(CAT_LABELS),datasets:[{data:catCounts,backgroundColor:COLORS,borderRadius:3}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}},animation:false}
   });
-
-  const top5 = [...venues].filter(v => v.rating && v.price_level)
-    .sort((a,b) => (b.rating/b.price_level)-(a.rating/a.price_level)).slice(0,5);
-  const valCtx = document.getElementById("value-chart").getContext("2d");
-  if (valueChart) valueChart.destroy();
-  valueChart = new Chart(valCtx, {
-    type: "bar",
-    data: {
-      labels: top5.map(v => v.name.length > 18 ? v.name.slice(0,18)+"…" : v.name),
-      datasets: [{ data: top5.map(v => +(v.rating/v.price_level).toFixed(2)), backgroundColor: "#4e79a7", borderRadius: 3 }]
-    },
-    options: { indexAxis: "y", plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } }, animation: false }
+  const top10=([...venues].filter(v=>v.rating&&v.price_level).sort((a,b)=>(b.rating/b.price_level)-(a.rating/a.price_level)).slice(0,10));
+  destroyChart("value");
+  charts["value"]=new Chart(document.getElementById("value-chart").getContext("2d"),{
+    type:"bar",
+    data:{labels:top10.map(v=>v.name.length>16?v.name.slice(0,16)+"…":v.name),datasets:[{data:top10.map(v=>+(v.rating/v.price_level).toFixed(2)),backgroundColor:"#4e79a7",borderRadius:3}]},
+    options:{indexAxis:"y",plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}},animation:false}
   });
 }
 
-// ── Detail panel ───────────────────────────────────────────────────────────
+function renderAnalytics(venues) {
+  // Rating histogram
+  const buckets=Array(10).fill(0);
+  venues.forEach(v=>{if(v.rating){const b=Math.min(9,Math.floor(v.rating/0.5));buckets[b]++;}});
+  destroyChart("rh");
+  charts["rh"]=new Chart(document.getElementById("rating-hist").getContext("2d"),{
+    type:"bar",
+    data:{labels:["0-0.5","0.5-1","1-1.5","1.5-2","2-2.5","2.5-3","3-3.5","3.5-4","4-4.5","4.5-5"],datasets:[{data:buckets,backgroundColor:"#4e79a7",borderRadius:3}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}},x:{ticks:{font:{size:9}}}},animation:false}
+  });
+
+  // Price donut
+  const priceCounts=[1,2,3,4].map(p=>venues.filter(v=>v.price_level===p).length);
+  destroyChart("pd");
+  charts["pd"]=new Chart(document.getElementById("price-donut").getContext("2d"),{
+    type:"doughnut",
+    data:{labels:["R","RR","RRR","RRRR"],datasets:[{data:priceCounts,backgroundColor:["#4ade80","#f59e0b","#f28e2b","#e15759"],borderWidth:2}]},
+    options:{plugins:{legend:{position:"right",labels:{font:{size:11}}}},animation:false}
+  });
+
+  // Top 10 neighbourhoods
+  const areaCounts={};
+  venues.forEach(v=>{if(v.area){areaCounts[v.area]=(areaCounts[v.area]||0)+1;}});
+  const topAreas=Object.entries(areaCounts).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  destroyChart("ac");
+  charts["ac"]=new Chart(document.getElementById("area-chart").getContext("2d"),{
+    type:"bar",
+    data:{labels:topAreas.map(a=>a[0]),datasets:[{data:topAreas.map(a=>a[1]),backgroundColor:"#76b7b2",borderRadius:3}]},
+    options:{indexAxis:"y",plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{precision:0}}},animation:false}
+  });
+
+  // Avg rating by category
+  const avgRatings=Object.keys(CAT_LABELS).map(c=>{const vs=venues.filter(v=>v.category===c&&v.rating);return vs.length?+(vs.reduce((s,v)=>s+v.rating,0)/vs.length).toFixed(2):0;});
+  destroyChart("avg");
+  charts["avg"]=new Chart(document.getElementById("avg-chart").getContext("2d"),{
+    type:"bar",
+    data:{labels:Object.values(CAT_LABELS),datasets:[{data:avgRatings,backgroundColor:COLORS,borderRadius:3}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{min:3,max:5,ticks:{precision:1}}},animation:false}
+  });
+
+  // Top 10 most reviewed
+  const top10r=[...venues].sort((a,b)=>(b.review_count||0)-(a.review_count||0)).slice(0,10);
+  destroyChart("rev");
+  charts["rev"]=new Chart(document.getElementById("reviewed-chart").getContext("2d"),{
+    type:"bar",
+    data:{labels:top10r.map(v=>v.name.length>20?v.name.slice(0,20)+"…":v.name),datasets:[{data:top10r.map(v=>v.review_count||0),backgroundColor:"#edc948",borderRadius:3}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}},animation:false}
+  });
+}
+
+function refresh() {
+  if (chatActive) return; // don't override chat results
+  const visible=getVisible();
+  renderVenues(visible);
+  renderSideCharts(visible);
+  renderAnalytics(visible);
+}
+
+// ── Chat ──
+document.querySelectorAll(".chip").forEach(c=>{
+  c.addEventListener("click",()=>{document.getElementById("chat-input").value=c.textContent;submitChat();});
+});
+document.getElementById("chat-btn").addEventListener("click",submitChat);
+document.getElementById("chat-input").addEventListener("keydown",e=>{if(e.key==="Enter")submitChat();});
+document.getElementById("chat-clear").addEventListener("click",()=>{
+  chatActive=false;
+  document.getElementById("chat-result-wrap").style.display="none";
+  document.getElementById("chat-input").value="";
+  refresh();
+});
+
+async function submitChat() {
+  const q=document.getElementById("chat-input").value.trim();
+  if(!q) return;
+  const btn=document.getElementById("chat-btn");
+  const wrap=document.getElementById("chat-result-wrap");
+  const bubble=document.getElementById("chat-bubble");
+  const chatVenues=document.getElementById("chat-venues");
+  btn.disabled=true; btn.textContent="…";
+  wrap.style.display="block";
+  bubble.className="chat-bubble";
+  bubble.innerHTML=`<div class="intent-tag">Searching…</div>`;
+  chatVenues.innerHTML="";
+
+  const ui_filters={};
+  if(activeCat) ui_filters.category=activeCat;
+  if(activePrice) ui_filters.price_max=activePrice;
+  if(activeArea) ui_filters.area=activeArea;
+  if(dateMode) ui_filters.is_date_spot=true;
+
+  try {
+    const res=await fetch(`${API_URL}/chat`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({query:q,lat:userLat,lng:userLng,ui_filters})
+    });
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.error||"Server error");
+
+    bubble.innerHTML=`<div class="intent-tag">🔍 ${esc(data.intent||q)}</div>${esc(data.summary)}`;
+    chatActive=true;
+
+    if(data.venues&&data.venues.length){
+      chatVenues.innerHTML=data.venues.map(v=>venueCardHtml(v,true)).join("");
+      bindCards(chatVenues);
+      // hide main browse list while chat results show
+      document.getElementById("venue-list").style.opacity=".4";
+    } else {
+      chatVenues.innerHTML="";
+      document.getElementById("venue-list").style.opacity="1";
+    }
+  } catch(err) {
+    bubble.className="chat-bubble error";
+    bubble.textContent=`Error: ${err.message}`;
+    chatActive=false;
+  }
+  btn.disabled=false; btn.textContent="Search";
+}
+
+// ── Filters ──
+document.getElementById("cat-row").addEventListener("click",e=>{
+  const pill=e.target.closest(".pill");
+  if(!pill) return;
+  document.querySelectorAll(".pill").forEach(p=>p.classList.remove("active"));
+  pill.classList.add("active");
+  activeCat=pill.dataset.cat;
+  chatActive=false; document.getElementById("venue-list").style.opacity="1";
+  refresh();
+});
+
+document.querySelectorAll(".price-pill").forEach(p=>{
+  p.addEventListener("click",()=>{
+    const val=parseInt(p.dataset.price);
+    if(activePrice===val){activePrice=null;p.classList.remove("active");}
+    else{document.querySelectorAll(".price-pill").forEach(x=>x.classList.remove("active"));activePrice=val;p.classList.add("active");}
+    chatActive=false; document.getElementById("venue-list").style.opacity="1";
+    refresh();
+  });
+});
+
+document.getElementById("date-toggle").addEventListener("click",()=>{
+  dateMode=!dateMode;
+  document.getElementById("date-toggle").classList.toggle("active",dateMode);
+  chatActive=false; document.getElementById("venue-list").style.opacity="1";
+  refresh();
+});
+
+document.getElementById("area-select").addEventListener("change",e=>{
+  activeArea=e.target.value;
+  chatActive=false; document.getElementById("venue-list").style.opacity="1";
+  refresh();
+});
+
+document.getElementById("sort-select").addEventListener("change",e=>{sortMode=e.target.value;refresh();});
+
+document.getElementById("clear-all").addEventListener("click",()=>{
+  activeCat=""; dateMode=false; activePrice=null; activeArea=""; sortMode="rating"; chatActive=false;
+  document.querySelectorAll(".pill").forEach(p=>p.classList.toggle("active",p.dataset.cat===""));
+  document.querySelectorAll(".price-pill").forEach(p=>p.classList.remove("active"));
+  document.getElementById("date-toggle").classList.remove("active");
+  document.getElementById("area-select").value="";
+  document.getElementById("sort-select").value="rating";
+  document.getElementById("chat-result-wrap").style.display="none";
+  document.getElementById("venue-list").style.opacity="1";
+  document.getElementById("chat-input").value="";
+  refresh();
+});
+
+// ── Location ──
+document.getElementById("loc-btn").addEventListener("click",()=>{
+  if(!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(pos=>{
+    userLat=pos.coords.latitude; userLng=pos.coords.longitude;
+    document.getElementById("loc-btn").classList.add("active");
+    document.getElementById("loc-btn").textContent="📍 On";
+    document.getElementById("sort-select").value="distance";
+    sortMode="distance"; refresh();
+  });
+});
+
+// ── Detail panel ──
 function openDetail(v) {
-  currentDetailVenue = v;
-  document.getElementById("d-name").textContent = v.name;
-  const priceStr = v.price_level ? PRICE_STR[v.price_level] : "";
-  const cuisine = v.cuisine ? ` · ${v.cuisine}` : "";
-  document.getElementById("d-sub").textContent = `${CAT_LABELS[v.category] || v.category}${cuisine} · ${v.area || "Cape Town"}`;
-  document.getElementById("d-rating").textContent = v.rating != null ? `${v.rating.toFixed(1)} ★` : "—";
-  document.getElementById("d-reviews").textContent = v.review_count != null ? v.review_count.toLocaleString() : "—";
-  document.getElementById("d-price").textContent = priceStr || "—";
-
-  const openNow = isOpenNow(v.opening_hours);
-  const statusEl = document.getElementById("d-status");
-  if (openNow === null) statusEl.innerHTML = "—";
-  else if (openNow) statusEl.innerHTML = `<span class="open-badge open">● Open</span>`;
-  else statusEl.innerHTML = `<span class="open-badge closed">● Closed</span>`;
-
-  // Directions
-  const dirLink = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(v.name + " Cape Town")}`;
-  document.getElementById("d-directions").href = dirLink;
-
-  // Favourite button
+  currentDetailVenue=v;
+  document.getElementById("d-name").textContent=v.name;
+  const cuisine=v.cuisine?` · ${v.cuisine}`:"";
+  document.getElementById("d-sub").textContent=`${CAT_LABELS[v.category]||v.category}${cuisine} · ${v.area||"Cape Town"}`;
+  document.getElementById("d-rating").textContent=v.rating!=null?`${v.rating.toFixed(1)} ★`:"—";
+  document.getElementById("d-reviews").textContent=v.review_count!=null?v.review_count.toLocaleString():"—";
+  document.getElementById("d-price").textContent=v.price_level?PRICE_STR[v.price_level]:"—";
+  const open=isOpenNow(v.opening_hours);
+  const statusEl=document.getElementById("d-status");
+  statusEl.innerHTML=open===null?"—":open?`<span class="open-badge open">● Open</span>`:`<span class="open-badge closed">● Closed</span>`;
+  document.getElementById("d-directions").href=`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(v.name+" Cape Town")}`;
   updateFavBtn(v.id);
-
-  // AI summary
-  const sumEl = document.getElementById("d-summary");
-  if (v.review_summary) { sumEl.textContent = v.review_summary; sumEl.className = "ai-summary"; }
-  else { sumEl.textContent = "AI summary not yet generated — enrichment runs weekly."; sumEl.className = "ai-summary placeholder"; }
-
-  // Tags
-  const tagsEl = document.getElementById("d-tags");
-  const tags = [];
-  if (v.is_date_spot) tags.push(`<span class="tag-chip date">♥ Good for dates</span>`);
-  if (v.cuisine) tags.push(`<span class="tag-chip vibe">${escHtml(v.cuisine)}</span>`);
-  if (v.standout_items && v.standout_items.length) v.standout_items.slice(0,3).forEach(i => tags.push(`<span class="tag-chip item">✦ ${escHtml(i)}</span>`));
-  tagsEl.innerHTML = tags.join("");
-
-  // Hours
-  const hoursEl = document.getElementById("d-hours");
-  const hoursLabel = document.getElementById("hours-label");
-  const oh = v.opening_hours;
-  if (oh && oh.weekdayDescriptions) {
-    hoursLabel.style.display = "block";
-    const todayIdx = new Date().getDay(); // 0=Sun
-    const googleIdx = (todayIdx + 6) % 7; // Google Mon=0
-    hoursEl.innerHTML = oh.weekdayDescriptions.map((line, i) => {
-      const [day, ...rest] = line.split(": ");
-      return `<div class="hours-row${i === googleIdx ? " today" : ""}"><span>${day}</span><span>${rest.join(": ")}</span></div>`;
-    }).join("");
-  } else { hoursLabel.style.display = "none"; hoursEl.innerHTML = ""; }
-
+  const sumEl=document.getElementById("d-summary");
+  if(v.review_summary){sumEl.textContent=v.review_summary;sumEl.className="ai-summary";}
+  else{sumEl.textContent="AI summary not yet generated — enrichment runs weekly.";sumEl.className="ai-summary placeholder";}
+  const tags=[];
+  if(v.is_date_spot) tags.push(`<span class="tag-chip date">♥ Good for dates</span>`);
+  if(v.cuisine) tags.push(`<span class="tag-chip vibe">${esc(v.cuisine)}</span>`);
+  if(v.standout_items&&v.standout_items.length) v.standout_items.slice(0,3).forEach(i=>tags.push(`<span class="tag-chip item">✦ ${esc(i)}</span>`));
+  document.getElementById("d-tags").innerHTML=tags.join("");
+  const oh=v.opening_hours;
+  const hl=document.getElementById("hours-label"), hel=document.getElementById("d-hours");
+  if(oh&&oh.weekdayDescriptions){
+    hl.style.display="block";
+    const todayG=(new Date().getDay()+6)%7;
+    hel.innerHTML=oh.weekdayDescriptions.map((line,i)=>{const[day,...rest]=line.split(": ");return `<div class="hours-row${i===todayG?" today":""}"><span>${day}</span><span>${rest.join(": ")}</span></div>`;}).join("");
+  } else {hl.style.display="none";hel.innerHTML="";}
   document.getElementById("detail-overlay").classList.remove("hidden");
 }
 
-function updateFavBtn(venueId) {
-  const btn = document.getElementById("d-fav-btn");
-  if (favIds.has(venueId)) { btn.textContent = "♥ Saved"; btn.classList.add("fav-active"); }
-  else { btn.textContent = "♡ Save"; btn.classList.remove("fav-active"); }
+function updateFavBtn(vid){
+  const btn=document.getElementById("d-fav-btn");
+  if(favIds.has(vid)){btn.textContent="♥ Saved";btn.classList.add("fav-active");}
+  else{btn.textContent="♡ Save";btn.classList.remove("fav-active");}
 }
 
-document.getElementById("d-fav-btn").addEventListener("click", async () => {
-  if (!currentDetailVenue) return;
-  const id = currentDetailVenue.id;
-  if (favIds.has(id)) {
-    await sb.from("favourites").delete().eq("device_id", deviceId).eq("venue_id", id);
-    favIds.delete(id);
-  } else {
-    await sb.from("favourites").upsert({ device_id: deviceId, venue_id: id });
-    favIds.add(id);
-  }
-  updateFavBtn(id);
-  refresh();
+document.getElementById("d-fav-btn").addEventListener("click",async()=>{
+  if(!currentDetailVenue) return;
+  const id=currentDetailVenue.id;
+  if(favIds.has(id)){await sb.from("favourites").delete().eq("device_id",deviceId).eq("venue_id",id);favIds.delete(id);}
+  else{await sb.from("favourites").upsert({device_id:deviceId,venue_id:id});favIds.add(id);}
+  updateFavBtn(id); refresh();
 });
 
-document.getElementById("detail-close").addEventListener("click", () => document.getElementById("detail-overlay").classList.add("hidden"));
-document.getElementById("detail-overlay").addEventListener("click", e => { if (e.target === document.getElementById("detail-overlay")) document.getElementById("detail-overlay").classList.add("hidden"); });
+document.getElementById("detail-close").addEventListener("click",()=>document.getElementById("detail-overlay").classList.add("hidden"));
+document.getElementById("detail-overlay").addEventListener("click",e=>{if(e.target===document.getElementById("detail-overlay"))document.getElementById("detail-overlay").classList.add("hidden");});
 
-// ── Favourites overlay ─────────────────────────────────────────────────────
-document.getElementById("fav-btn").addEventListener("click", () => {
-  const favVenues = allVenues.filter(v => favIds.has(v.id));
-  const el = document.getElementById("fav-list");
-  if (!favVenues.length) { el.innerHTML = `<div class="empty-state">No saved places yet — tap ♡ on any venue to save it.</div>`; }
-  else { el.innerHTML = favVenues.map(v => `<div class="venue-card" style="cursor:pointer" onclick="openDetail(${JSON.stringify(v).replace(/"/g,'&quot;')})">
-    <div class="venue-card-body"><div class="venue-name">${escHtml(v.name)}</div>
-    <div class="venue-meta"><span class="badge">${v.category}</span><span class="area-tag">${v.area||""}</span></div></div>
-    <div class="venue-card-right"><div class="rating-pill"><span class="star">★</span>${v.rating!=null?v.rating.toFixed(1):"—"}</div></div>
-  </div>`).join(""); }
+// ── Favourites ──
+document.getElementById("fav-btn").addEventListener("click",()=>{
+  const fvs=allVenues.filter(v=>favIds.has(v.id));
+  const el=document.getElementById("fav-list");
+  el.innerHTML=fvs.length?fvs.map(v=>venueCardHtml(v)).join(""):`<div class="empty-state">No saved places yet — tap ♡ on any venue to save it.</div>`;
+  bindCards(el);
   document.getElementById("fav-overlay").classList.remove("hidden");
 });
-document.getElementById("fav-close").addEventListener("click", () => document.getElementById("fav-overlay").classList.add("hidden"));
-document.getElementById("fav-overlay").addEventListener("click", e => { if (e.target === document.getElementById("fav-overlay")) document.getElementById("fav-overlay").classList.add("hidden"); });
+document.getElementById("fav-close").addEventListener("click",()=>document.getElementById("fav-overlay").classList.add("hidden"));
+document.getElementById("fav-overlay").addEventListener("click",e=>{if(e.target===document.getElementById("fav-overlay"))document.getElementById("fav-overlay").classList.add("hidden");});
 
-// ── Location ───────────────────────────────────────────────────────────────
-document.getElementById("loc-btn").addEventListener("click", () => {
-  if (!navigator.geolocation) return;
-  navigator.geolocation.getCurrentPosition(pos => {
-    userLat = pos.coords.latitude; userLng = pos.coords.longitude;
-    document.getElementById("loc-btn").classList.add("active");
-    document.getElementById("loc-btn").textContent = "📍 Location on";
-    document.getElementById("sort-select").value = "distance";
-    sortMode = "distance"; refresh();
-  });
-});
-
-// ── Browse controls ────────────────────────────────────────────────────────
-document.getElementById("pill-row").addEventListener("click", e => {
-  const pill = e.target.closest(".pill");
-  if (!pill) return;
-  document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
-  pill.classList.add("active");
-  activeCat = pill.dataset.cat;
-  refresh();
-});
-
-document.getElementById("date-toggle").addEventListener("click", () => {
-  dateMode = !dateMode;
-  document.getElementById("date-toggle").classList.toggle("active", dateMode);
-  refresh();
-});
-
-document.getElementById("sort-select").addEventListener("change", e => { sortMode = e.target.value; refresh(); });
-
-function refresh() {
-  const visible = getVisible();
-  renderVenues(visible);
-  renderCharts(visible);
-}
-
-// ── Chat assistant ─────────────────────────────────────────────────────────
-document.querySelectorAll(".chip").forEach(chip => {
-  chip.addEventListener("click", () => { document.getElementById("chat-input").value = chip.textContent; submitChat(); });
-});
-document.getElementById("chat-btn").addEventListener("click", submitChat);
-document.getElementById("chat-input").addEventListener("keydown", e => { if (e.key === "Enter") submitChat(); });
-
-async function submitChat() {
-  const q = document.getElementById("chat-input").value.trim();
-  if (!q) return;
-  const resultEl = document.getElementById("chat-result");
-  const btn = document.getElementById("chat-btn");
-  btn.disabled = true; btn.textContent = "…";
-  resultEl.style.display = "block"; resultEl.className = "chat-result"; resultEl.textContent = "Searching…";
-
-  // Local filter fallback while AI enrichment is pending
-  const lq = q.toLowerCase();
-  let filtered = allVenues;
-  if (lq.includes("date") || lq.includes("romantic") || lq.includes("girlfriend") || lq.includes("anniversary"))
-    filtered = filtered.filter(v => v.is_date_spot);
-  if (lq.includes("beach") || lq.includes("sea") || lq.includes("ocean"))
-    filtered = filtered.filter(v => ["outdoor","cafe","restaurant"].includes(v.category));
-  if (lq.includes("sushi")) filtered = filtered.filter(v => v.cuisine === "sushi" || v.name.toLowerCase().includes("sushi"));
-  if (lq.includes("thrift") || lq.includes("vintage")) filtered = filtered.filter(v => v.category === "thrift");
-  if (lq.includes("coffee") || lq.includes("cafe")) filtered = filtered.filter(v => v.category === "cafe");
-  if (lq.includes("outdoor") || lq.includes("hike") || lq.includes("nature")) filtered = filtered.filter(v => v.category === "outdoor");
-  if (lq.includes("family") || lq.includes("kids") || lq.includes("children")) filtered = filtered.filter(v => v.category === "family");
-  if (lq.includes("adventure") || lq.includes("kayak") || lq.includes("surf")) filtered = filtered.filter(v => v.category === "adventure");
-  filtered = filtered.sort((a,b) => (b.rating||0)-(a.rating||0)).slice(0, 20);
-
-  if (!filtered.length) {
-    resultEl.textContent = `No matches found for "${q}". Try a different search.`;
-  } else {
-    resultEl.innerHTML = `Found <strong>${filtered.length}</strong> places for "<em>${escHtml(q)}</em>"${filtered[0] ? ` — top pick: <strong>${escHtml(filtered[0].name)}</strong> (${filtered[0].rating?.toFixed(1) || "—"} ★)` : ""}. <em style="color:var(--muted);font-size:0.82rem">Full AI search available after venue enrichment.</em>`;
-    renderVenues(filtered);
-    renderCharts(filtered);
-  }
-  btn.disabled = false; btn.textContent = "Search";
-}
-
-// ── Boot ───────────────────────────────────────────────────────────────────
-(async () => {
+// ── Boot ──
+(async()=>{
   await loadFavourites();
-  allVenues = await fetchAllVenues();
-  document.getElementById("header-sub").textContent = `${allVenues.length} venues · Cape Town`;
+  allVenues=await fetchAllVenues();
+  document.getElementById("header-sub").textContent=`${allVenues.length.toLocaleString()} venues · Cape Town`;
   refresh();
 })();
 </script>

@@ -23,6 +23,8 @@ services:
         value: "false"
       - key: MAX_API_CALLS_PER_RUN
         value: "50"
+      - key: OPENAI_API_KEY
+        sync: false
 
   # ── n8n (Docker) ──────────────────────────────────────────────────────────
   - type: web
