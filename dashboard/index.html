@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cape Town Explorer</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #222; }
+    header { background: #1a1a2e; color: #fff; padding: 1.2rem 2rem; }
+    header h1 { font-size: 1.4rem; }
+    header p  { font-size: 0.85rem; opacity: 0.7; margin-top: 0.2rem; }
+    main { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .card { background: #fff; border-radius: 8px; padding: 1rem; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .card .count { font-size: 2rem; font-weight: 700; color: #1a1a2e; }
+    .card .label { font-size: 0.8rem; color: #666; text-transform: capitalize; margin-top: 0.2rem; }
+    .chart-wrap { background: #fff; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 2rem; }
+    .toolbar { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; }
+    select { padding: 0.4rem 0.8rem; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    th { background: #1a1a2e; color: #fff; padding: 0.7rem 1rem; text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    td { padding: 0.65rem 1rem; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f9f9f9; }
+    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: #e8eaf6; color: #3949ab; text-transform: capitalize; }
+    .empty { text-align: center; padding: 3rem; color: #999; }
+    #status { font-size: 0.8rem; color: #666; margin-left: auto; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Cape Town Explorer</h1>
+  <p>Real venue data from Supabase — no hardcoded arrays</p>
+</header>
+
+<main>
+  <div class="cards" id="summary-cards">
+    <div class="card"><div class="count" id="total-count">—</div><div class="label">Total venues</div></div>
+  </div>
+
+  <div class="chart-wrap">
+    <canvas id="cat-chart" height="80"></canvas>
+  </div>
+
+  <div class="toolbar">
+    <select id="cat-filter">
+      <option value="">All categories</option>
+      <option value="cafe">Cafe</option>
+      <option value="restaurant">Restaurant</option>
+      <option value="attraction">Attraction</option>
+      <option value="outdoor">Outdoor</option>
+      <option value="family">Family</option>
+      <option value="adventure">Adventure</option>
+      <option value="thrift">Thrift</option>
+    </select>
+    <span id="status"></span>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th><th>Category</th><th>Area</th><th>Rating</th><th>Reviews</th>
+      </tr>
+    </thead>
+    <tbody id="venue-tbody">
+      <tr><td colspan="5" class="empty">Loading…</td></tr>
+    </tbody>
+  </table>
+</main>
+
+<script>
+  // ── Config — fill these from your Supabase project settings ──────────────
+  const SUPABASE_URL      = "https://uqjjxlccxwpwwmdgpjla.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVxamp4bGNjeHdwd3dtZGdwamxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNTY0NzYsImV4cCI6MjA5NzczMjQ3Nn0.4F_jCwZCdMysSwD9LP48sSC7CEvDFYGl1FoCTRekH0E";
+  // ─────────────────────────────────────────────────────────────────────────
+
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const CATEGORIES = ["cafe","restaurant","attraction","outdoor","family","adventure","thrift"];
+  const COLORS     = ["#4e79a7","#f28e2b","#e15759","#76b7b2","#59a14f","#edc948","#b07aa1"];
+
+  let chart = null;
+
+  async function loadSummary() {
+    // Fetch exact counts per category from the server — avoids the 1000-row client limit.
+    const counts = Object.fromEntries(CATEGORIES.map(c => [c, 0]));
+    let total = 0;
+
+    await Promise.all(CATEGORIES.map(async cat => {
+      const { count, error } = await sb
+        .from("venues")
+        .select("*", { count: "exact", head: true })
+        .eq("category", cat);
+      if (!error) { counts[cat] = count; total += count; }
+    }));
+
+    document.getElementById("total-count").textContent = total;
+
+    // Category summary cards
+    const cardsEl = document.getElementById("summary-cards");
+    // Remove old category cards if any
+    cardsEl.querySelectorAll(".cat-card").forEach(el => el.remove());
+    CATEGORIES.forEach(cat => {
+      const div = document.createElement("div");
+      div.className = "card cat-card";
+      div.innerHTML = `<div class="count">${counts[cat]}</div><div class="label">${cat}</div>`;
+      cardsEl.appendChild(div);
+    });
+
+    // Bar chart
+    const ctx = document.getElementById("cat-chart").getContext("2d");
+    if (chart) chart.destroy();
+    chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: CATEGORIES,
+        datasets: [{
+          label: "Venues by category",
+          data: CATEGORIES.map(c => counts[c]),
+          backgroundColor: COLORS,
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+      }
+    });
+  }
+
+  async function fetchAllVenues(category = "") {
+    const PAGE = 1000;
+    let all = [], from = 0, done = false;
+    while (!done) {
+      let q = sb.from("venues")
+        .select("name,category,area,rating,review_count")
+        .order("rating", { ascending: false })
+        .range(from, from + PAGE - 1);
+      if (category) q = q.eq("category", category);
+      const { data, error } = await q;
+      if (error) return { data: null, error };
+      all = all.concat(data);
+      done = data.length < PAGE;
+      from += PAGE;
+    }
+    return { data: all, error: null };
+  }
+
+  async function loadVenues(category = "") {
+    const statusEl = document.getElementById("status");
+    statusEl.textContent = "Loading…";
+
+    const { data, error } = await fetchAllVenues(category);
+    const tbody = document.getElementById("venue-tbody");
+
+    if (error) {
+      tbody.innerHTML = `<tr><td colspan="5" class="empty">Error loading venues: ${error.message}</td></tr>`;
+      statusEl.textContent = "";
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="empty">No venues found${category ? " for category: " + category : ""}.</td></tr>`;
+      statusEl.textContent = "";
+      return;
+    }
+
+    statusEl.textContent = `${data.length} venues`;
+    tbody.innerHTML = data.map(v => `
+      <tr>
+        <td>${v.name}</td>
+        <td><span class="badge">${v.category}</span></td>
+        <td>${v.area || "—"}</td>
+        <td>${v.rating != null ? v.rating.toFixed(1) : "—"}</td>
+        <td>${v.review_count != null ? v.review_count.toLocaleString() : "—"}</td>
+      </tr>`).join("");
+  }
+
+  document.getElementById("cat-filter").addEventListener("change", e => {
+    loadVenues(e.target.value);
+  });
+
+  // Initial load
+  loadSummary();
+  loadVenues();
+</script>
+</body>
+</html>

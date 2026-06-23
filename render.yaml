@@ -1,0 +1,61 @@
+services:
+  # ── Pipeline API (Python / Flask) ─────────────────────────────────────────
+  - type: web
+    name: cpt-explorer-pipeline
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn pipeline.api:app --timeout 600
+    plan: free
+    envVars:
+      - key: GOOGLE_PLACES_API_KEY
+        sync: false
+      - key: SUPABASE_DB_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: PIPELINE_API_SECRET
+        sync: false
+      - key: CITY
+        value: Cape Town
+      - key: DRY_RUN
+        value: "false"
+      - key: MAX_API_CALLS_PER_RUN
+        value: "50"
+
+  # ── n8n (Docker) ──────────────────────────────────────────────────────────
+  - type: web
+    name: cpt-explorer-n8n
+    runtime: docker
+    dockerfilePath: n8n/Dockerfile
+    plan: free
+    envVars:
+      - key: N8N_BASIC_AUTH_ACTIVE
+        value: "true"
+      - key: N8N_BASIC_AUTH_USER
+        value: admin
+      - key: N8N_BASIC_AUTH_PASSWORD
+        sync: false
+      - key: N8N_ENCRYPTION_KEY
+        sync: false
+      - key: DB_TYPE
+        value: postgresdb
+      - key: DB_POSTGRESDB_HOST
+        value: aws-0-eu-west-1.pooler.supabase.com
+      - key: DB_POSTGRESDB_PORT
+        value: "5432"
+      - key: DB_POSTGRESDB_DATABASE
+        value: postgres
+      - key: DB_POSTGRESDB_USER
+        sync: false
+      - key: DB_POSTGRESDB_PASSWORD
+        sync: false
+      - key: DB_POSTGRESDB_SCHEMA
+        value: n8n
+      - key: N8N_HOST
+        sync: false
+      - key: WEBHOOK_URL
+        sync: false
+      - key: GENERIC_TIMEZONE
+        value: Africa/Johannesburg
