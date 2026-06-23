@@ -369,7 +369,7 @@ function venueCardHtml(v, showSnippet=false) {
       ${snippet}
     </div>
     <div class="venue-card-right">
-      <div class="rating-pill"><span class="star">★</span>${v.rating!=null?v.rating.toFixed(1):"—"}</div>
+      <div class="rating-pill"><span class="star">★</span>${v.rating!=null?Number(v.rating).toFixed(1):"—"}</div>
       <div class="review-count">${v.review_count!=null?v.review_count.toLocaleString():""}</div>
       <div>${heart}${saved}</div>
     </div>
@@ -599,7 +599,7 @@ function openDetail(v) {
   document.getElementById("d-name").textContent=v.name;
   const cuisine=v.cuisine?` · ${v.cuisine}`:"";
   document.getElementById("d-sub").textContent=`${CAT_LABELS[v.category]||v.category}${cuisine} · ${v.area||"Cape Town"}`;
-  document.getElementById("d-rating").textContent=v.rating!=null?`${v.rating.toFixed(1)} ★`:"—";
+  document.getElementById("d-rating").textContent=v.rating!=null?`${Number(v.rating).toFixed(1)} ★`:"—";
   document.getElementById("d-reviews").textContent=v.review_count!=null?v.review_count.toLocaleString():"—";
   document.getElementById("d-price").textContent=v.price_level?PRICE_STR[v.price_level]:"—";
   const open=isOpenNow(v.opening_hours);
